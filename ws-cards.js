@@ -12,15 +12,6 @@ var WS_CARDS = [
     xs: true
   },
   {
-    id: "ws002", ti: "UBS: Private Credit Default Stress Could Hit 14-15%",
-    sr: "UBS Investment Bank", ty: "article", dt: "2026-02-25",
-    dm: "CreditMarkets", sg: "Alert", ag: "A2",
-    tg: ["#privatecredit", "#defaultcycle", "#pikrisk", "#xsource"],
-    su: "Mish/UBS tail scenario: PC defaults 14-15% vs 3-6% HY. AI disruption to software raises structural pressure.",
-    url: "https://www.ft.com/content/62d922c9-bac8-4de5-bda9-55bfc29919bc",
-    xs: true
-  },
-  {
     id: "ws003", ti: "Blue Owl OBDC II: Redemption Gate Triggers Contagion",
     sr: "Bloomberg / Reuters", ty: "market_data", dt: "2026-02-18",
     dm: "CreditMarkets", sg: "Alert", ag: "A2",
@@ -44,7 +35,7 @@ var WS_CARDS = [
     dm: "CreditMarkets", sg: "Confirmed", ag: "A3",
     tg: ["#privatecredit", "#directlending", "#macrorates", "#xsource"],
     su: "JPMAM: PC essential ballast for 60/40. Senior-secured DL yields ~200bps above LL, ~300bps above HY.",
-        url: "https://am.jpmorgan.com/us/en/asset-management/adv/insights/portfolio-insights/alternatives/alternatives-outlook/",
+    url: "https://am.jpmorgan.com/us/en/asset-management/adv/insights/portfolio-insights/alternatives/alternatives-outlook/",
     xs: true
   },
   {
@@ -75,7 +66,6 @@ var WS_CARDS = [
     xs: true
   }
 ];
-
 // Inject cards into main C array and re-render
 if (typeof C !== 'undefined') {
   WS_CARDS.forEach(function(card) { C.push(card); });
