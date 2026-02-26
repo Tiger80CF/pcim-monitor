@@ -44,7 +44,7 @@ var WS_CARDS = [
     dm: "CreditMarkets", sg: "Confirmed", ag: "A3",
     tg: ["#privatecredit", "#directlending", "#macrorates", "#xsource"],
     su: "JPMAM: PC essential ballast for 60/40. Senior-secured DL yields ~200bps above LL, ~300bps above HY.",
-    url: "https://am.jpmorgan.com/us/en/asset-management/adv/about-us/media/press-releases/jp-morgan-unveils-2026-global-alternatives-outlook",
+        url: "https://am.jpmorgan.com/us/en/asset-management/adv/insights/portfolio-insights/alternatives/alternatives-outlook/",
     xs: true
   },
   {
@@ -62,7 +62,7 @@ var WS_CARDS = [
     dm: "Regulatory", sg: "Alert", ag: "A4",
     tg: ["#privatecredit", "#lifeannuity", "#generalaccount", "#liquidityrisk", "#xsource"],
     su: "Some US life insurers park 50%+ FI in PC. Illiquid at $685B/18% of $3.8T fixed-income assets.",
-    url: "https://www.wsj.com/finance/investing/us-insurers-private-credit-moodys",
+    url: "https://www.wsj.com/finance/investing/u-s-insurers-are-binging-on-private-credit-moodys-says-ee10a41e",
     xs: true
   },
   {
