@@ -1,3 +1,8 @@
+// ============================================================
+// PCIM — Private Credit Intelligence Monitor
+// © 2026 ReviveERM™ — a subsidiary of Spiritus Partners, Inc.,
+// a Delaware corporation. All rights reserved.
+// ============================================================
 // Wall Street Research Cards - sourced via X #privatecredit
 // Auto-injected after main script loads
 
@@ -62,7 +67,7 @@ var WS_CARDS = [
     dm: "Macro", sg: "Confirmed", ag: "A3",
     tg: ["#privatecredit", "#macrorates", "#directlending", "#xsource"],
     su: "Fed maps $1.3T PC market. Growth driven by structure, policy, and volatility displacement from banks.",
-    url: "https://nyfed.org/4qleICc",
+    url: "https://tellerwindow.newyorkfed.org/2025/10/17/private-credit-and-its-credit-risk/",
     xs: true
   }
 ];

@@ -1,355 +1,1015 @@
-<!doctype html>
+<!DOCTYPE html>
+<!--
+  PCIM — Private Credit Intelligence Monitor
+  © 2026 ReviveERM™ — a subsidiary of Spiritus Partners, Inc.,
+  a Delaware corporation. All rights reserved.
+-->
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  <title>PCIM | Private Credit Intelligence Monitor</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; scrollbar-width: thin; scrollbar-color: #3f3f46 transparent; }
-    body { background: #09090b; color: #f4f4f5; font-family: ui-sans-serif, system-ui, sans-serif; font-size: 12px; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
-    button { cursor: pointer; font-family: inherit; font-size: 11px; }
-    #hdr { padding: 10px 16px; border-bottom: 1px solid #27272a; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
-    #bnr { background: #450a0a; border-bottom: 1px solid #dc2626; padding: 6px 16px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; cursor: pointer; }
-    #kpi { display: flex; gap: 8px; padding: 8px 16px; border-bottom: 1px solid #27272a; flex-shrink: 0; }
-    .kt { flex: 1; background: #18181b; border: 1px solid #27272a; border-radius: 6px; padding: 8px 10px; }
-    .kl { font-size: 10px; color: #71717a; margin-bottom: 3px; }
-    .kv { font-size: 15px; font-weight: 700; }
-    .ku { font-size: 10px; color: #71717a; margin-left: 2px; }
-    .kd { font-size: 10px; font-weight: 600; margin-left: 5px; }
-    #bdy { display: flex; flex: 1; overflow: hidden; }
-    #sb { width: 165px; flex-shrink: 0; background: #09090b; border-right: 1px solid #27272a; padding: 12px 8px; overflow-y: auto; display: flex; flex-direction: column; }
-    .sl { font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #52525b; margin: 10px 0 4px; }
-    .sl:first-child { margin-top: 0; }
-    .pl { width: 100%; text-align: left; padding: 3px 7px; border-radius: 4px; border: 1px solid #3f3f46; color: #71717a; background: transparent; display: block; margin-bottom: 2px; }
-    .pl.on { background: #27272a; font-weight: 700; }
-    #srch { width: 100%; background: #18181b; border: 1px solid #3f3f46; border-radius: 4px; padding: 4px 7px; color: #f4f4f5; outline: none; margin-bottom: 6px; }
-    #tpills, #scills { display: flex; flex-wrap: wrap; gap: 3px; }
-    .tp, .scp { font-size: 9px; background: #18181b; border: 1px solid #3f3f46; border-radius: 3px; padding: 2px 5px; color: #71717a; cursor: pointer; }
-    .scp.on { background: #3b82f633; border-color: #3b82f6; color: #60a5fa; }
-    #main { flex: 1; overflow-y: auto; padding: 14px; }
-    #synth { background: #111114; border: 1px solid #27272a; border-radius: 6px; padding: 12px; margin-bottom: 14px; display: flex; gap: 12px; align-items: flex-start; }
-    .sy-icon { font-size: 20px; padding: 10px; background: #18181b; border: 1px solid #3f3f46; border-radius: 8px; }
-    .sy-txt { flex: 1; }
-    .sy-h { font-size: 10px; font-weight: 700; color: #fbbf24; margin-bottom: 4px; display: flex; justify-content: space-between; }
-    .sy-b { color: #d4d4d8; line-height: 1.4; }
-    #tally { display: flex; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; font-size: 11px; }
-    #grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px; }
-    .ch { border-bottom: 2px solid #3f3f46; padding-bottom: 5px; margin-bottom: 8px; font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #71717a; }
-    .cd { border: 1px solid #27272a; border-left: 3px solid #3f3f46; border-radius: 6px; background: #18181b; padding: 10px; margin-bottom: 8px; transition: all 0.2s; cursor: pointer; }
-    .cd:hover { border-color: #3b82f6; background: #1c1c1f; transform: translateY(-1px); }
-    .cd.hl { box-shadow: 0 0 0 2px #dc2626, 0 0 12px #dc262644; }
-    .ct { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
-    .bg { font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; }
-    .cm { display: flex; gap: 5px; font-size: 10px; color: #71717a; }
-    .ci { font-size: 11px; font-weight: 600; color: #f4f4f5; line-height: 1.4; margin-bottom: 3px; }
-    .cs { font-size: 10px; color: #a1a1aa; line-height: 1.5; margin-bottom: 5px; }
-    .cth { display: flex; flex-wrap: wrap; gap: 3px; margin-bottom: 5px; }
-    .ht { font-size: 9px; background: #27272a; border: 1px solid #3f3f46; border-radius: 3px; padding: 1px 5px; color: #71717a; cursor: pointer; }
-    .cf { display: flex; justify-content: space-between; font-size: 9px; color: #52525b; }
-    .cl { font-size: 9px; color: #60a5fa; text-decoration: none; display: inline-block; margin-top: 4px; }
-    .cl:hover { color: #93c5fd; text-decoration: underline; }
-    #rp { width: 190px; flex-shrink: 0; background: #09090b; border-left: 1px solid #27272a; padding: 12px 10px; overflow-y: auto; }
-    .rh { font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #52525b; margin-bottom: 10px; }
-    .ri { width: 100%; text-align: left; border: 1px solid #27272a; border-radius: 5px; padding: 7px 8px; margin-bottom: 7px; display: block; background: transparent; cursor: pointer; transition: background 0.2s; }
-    .ri:hover { background: #18181b; border-color: #3f3f46; }
-    .ru { font-size: 9px; font-weight: 700; }
-    .rj { font-size: 9px; color: #52525b; }
-    .rt { font-size: 10px; color: #e4e4e7; line-height: 1.3; margin-top: 3px; }
-    #qa { margin-top: auto; padding-top: 10px; border-top: 1px solid #27272a; }
-    .qab { width: 100%; padding: 6px; background: #1e3a5f; border: 1px solid #3b82f6; color: #fff; border-radius: 4px; font-size: 10px; margin-top: 4px; } .x-src { font-size: 8px; color: #818cf8; margin-left: 4px; border: 1px solid #6366f133; background: #6366f111; border-radius: 3px; padding: 1px 3px; } #upbtn { width: 100%; padding: 6px 8px; background: #14532d33; border: 1px solid #16a34a; color: #4ade80; border-radius: 4px; font-size: 10px; font-weight: 700; cursor: pointer; margin-bottom: 8px; } #upbtn:hover { background: #14532d66; } .upm-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; align-items: center; justify-content: center; } .upm-overlay.show { display: flex; } .upbox { background: #111114; border: 1px solid #27272a; border-radius: 10px; padding: 20px; width: 520px; max-height: 90vh; overflow-y: auto; } .upbox h2 { font-size: 13px; color: #f4f4f5; margin-bottom: 4px; } .upbox .upsub { font-size: 10px; color: #71717a; margin-bottom: 14px; } .upfld { margin-bottom: 10px; } .upfld label { display: block; font-size: 10px; font-weight: 700; color: #a1a1aa; margin-bottom: 3px; letter-spacing: 1px; text-transform: uppercase; } .upfld input, .upfld textarea, .upfld select { width: 100%; background: #18181b; border: 1px solid #3f3f46; border-radius: 5px; padding: 6px 8px; color: #f4f4f5; font-size: 11px; font-family: inherit; outline: none; } .upfld textarea { height: 60px; resize: vertical; } .upfld input:focus, .upfld textarea:focus, .upfld select:focus { border-color: #3b82f6; } .eval-box { background: #0a0a0c; border: 1px solid #27272a; border-radius: 6px; padding: 10px; margin-bottom: 10px; display: none; } .eval-box.show { display: block; } .eval-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; font-size: 11px; } .eval-lbl { color: #71717a; } .eval-val { font-weight: 700; } .up-acts { display: flex; gap: 8px; } .up-acts button { flex: 1; padding: 7px; border-radius: 5px; font-size: 11px; font-weight: 700; border: 1px solid; cursor: pointer; } .up-evalb { background: #1e3a5f; border-color: #3b82f6; color: #93c5fd; } .up-addb { background: #14532d; border-color: #16a34a; color: #4ade80; display: none; } .up-canb { background: transparent; border-color: #3f3f46; color: #71717a; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="author" content="ReviveERM™ — Spiritus Partners, Inc.">
+<meta name="copyright" content="© 2026 ReviveERM™ — a subsidiary of Spiritus Partners, Inc., a Delaware corporation">
+<title>PCIM — Private Credit Intelligence Monitor | ReviveERM™</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" defer></script>
+<style>
+/* ===== RESET & BASE ===== */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:#09090b;color:#e4e4e7;font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;font-size:12px;line-height:1.5;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#3f3f46;border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:#52525b}
+
+/* ===== LAYOUT ===== */
+.dashboard{display:grid;grid-template-rows:auto auto auto 1fr auto;grid-template-columns:165px 1fr 190px;height:100dvh;width:100%}
+.hdr{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;padding:8px 16px;background:#09090b;border-bottom:1px solid #27272a}
+.alert-banner{grid-column:1/-1;display:none;padding:6px 16px;background:#450a0a;border-bottom:1px solid #7f1d1d;cursor:pointer;font-size:11px;color:#fca5a5;transition:background .18s cubic-bezier(.16,1,.3,1)}
+.alert-banner:hover{background:#5a0f0f}
+.alert-banner.show{display:block}
+.kpi-bar{grid-column:1/-1;display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:#27272a;border-bottom:1px solid #27272a}
+
+.sidebar{grid-row:4;grid-column:1;overflow-y:auto;overscroll-behavior:contain;padding:10px;border-right:1px solid #27272a;background:#0a0a0c}
+.main{grid-row:4;grid-column:2;overflow-y:auto;overscroll-behavior:contain;padding:12px 16px}
+.rpanel{grid-row:4;grid-column:3;overflow-y:auto;overscroll-behavior:contain;padding:10px;border-left:1px solid #27272a;background:#0a0a0c}
+
+/* ===== HEADER ===== */
+.hdr-left{font-size:13px;font-weight:700;letter-spacing:.5px;color:#fafafa}
+.hdr-brand{display:flex;align-items:baseline;gap:10px}
+.hdr-brand-sub{font-size:8.5px;font-weight:400;color:#52525b;letter-spacing:.3px}
+.hdr-right{font-size:10px;color:#71717a}
+.copyright-bar{grid-column:1/-1;display:flex;justify-content:center;align-items:center;gap:6px;padding:5px 16px;background:#09090b;border-top:1px solid #27272a;font-size:8px;color:#3f3f46;letter-spacing:.3px}
+
+/* ===== KPI TILES ===== */
+.kpi-tile{background:#18181b;padding:10px 14px;display:flex;flex-direction:column;gap:2px}
+.kpi-label{font-size:9px;text-transform:uppercase;letter-spacing:.8px;color:#71717a;font-weight:600}
+.kpi-row{display:flex;align-items:baseline;gap:8px}
+.kpi-val{font-size:18px;font-weight:700;color:#fafafa;font-variant-numeric:tabular-nums lining-nums}
+.kpi-unit{font-size:9px;color:#71717a}
+.kpi-delta{font-size:10px;font-weight:600;font-variant-numeric:tabular-nums lining-nums}
+.kpi-delta.bad{color:#dc2626}.kpi-delta.good{color:#16a34a}
+.kpi-spark{margin-top:4px}
+
+/* ===== SIDEBAR ===== */
+.sb-section{margin-bottom:12px}
+.sb-title{font-size:9px;text-transform:uppercase;letter-spacing:1px;color:#52525b;font-weight:700;margin-bottom:6px}
+.sb-pills{display:flex;flex-wrap:wrap;gap:4px}
+.pill{display:inline-flex;align-items:center;gap:3px;padding:3px 7px;border-radius:4px;font-size:10px;cursor:pointer;border:1px solid #27272a;background:#18181b;color:#a1a1aa;transition:all .18s cubic-bezier(.16,1,.3,1);white-space:nowrap;user-select:none}
+.pill:hover{border-color:#3f3f46;color:#e4e4e7}
+.pill.active{border-color:#3b82f6;color:#3b82f6;background:#172554}
+.pill .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.pill-alert .dot{background:#dc2626}.pill-confirmed .dot{background:#16a34a}.pill-monitor .dot{background:#ca8a04}.pill-regulatory .dot{background:#2563eb}
+.pill-count{font-size:9px;color:#71717a;margin-left:2px}
+
+#search{width:100%;padding:5px 8px;border:1px solid #27272a;border-radius:4px;background:#18181b;color:#e4e4e7;font-size:11px;outline:none;margin-bottom:8px}
+#search:focus{border-color:#3b82f6}
+#search::placeholder{color:#52525b}
+
+.sb-btn{display:block;width:100%;padding:6px 0;border:1px solid #27272a;border-radius:4px;background:#18181b;color:#a1a1aa;font-size:10px;cursor:pointer;text-align:center;margin-bottom:4px;transition:all .18s cubic-bezier(.16,1,.3,1)}
+.sb-btn:hover{border-color:#3f3f46;color:#e4e4e7}
+.sb-btn.primary{background:#1e3a5f;border-color:#2563eb;color:#93c5fd}
+.sb-btn.primary:hover{background:#1e40af}
+
+/* ===== MAIN CONTENT ===== */
+.synth-box{background:#18181b;border:1px solid #27272a;border-radius:6px;padding:12px 16px;margin-bottom:12px;display:flex;align-items:flex-start;gap:10px}
+.synth-icon{width:28px;height:28px;border-radius:6px;background:#172554;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.synth-icon svg{width:16px;height:16px;color:#3b82f6}
+.synth-label{font-size:9px;text-transform:uppercase;letter-spacing:1px;color:#3b82f6;font-weight:700;margin-bottom:2px}
+.synth-text{font-size:11px;color:#a1a1aa;line-height:1.6}
+
+.tally-row{display:flex;gap:12px;margin-bottom:12px;font-size:10px;color:#71717a}
+.tally-item{display:flex;align-items:center;gap:4px}
+.tally-dot{width:6px;height:6px;border-radius:50%}
+
+.domain-group{margin-bottom:16px}
+.domain-header{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#52525b;font-weight:700;margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid #1a1a1e}
+
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:8px}
+
+.card{background:#18181b;border:1px solid #27272a;border-radius:6px;padding:12px;cursor:pointer;transition:all .18s cubic-bezier(.16,1,.3,1);border-left:3px solid #27272a;position:relative}
+.card:hover{border-color:#3b82f6;transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.3)}
+.card[data-signal="Alert"]{border-left-color:#dc2626}
+.card[data-signal="Confirmed"]{border-left-color:#16a34a}
+.card[data-signal="Monitor"]{border-left-color:#ca8a04}
+.card[data-signal="Regulatory"]{border-left-color:#2563eb}
+
+.card-top{display:flex;align-items:center;gap:6px;margin-bottom:6px;flex-wrap:wrap}
+.badge{padding:2px 6px;border-radius:3px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.badge-alert{background:#450a0a;color:#fca5a5;border:1px solid #7f1d1d}
+.badge-confirmed{background:#052e16;color:#86efac;border:1px solid #166534}
+.badge-monitor{background:#422006;color:#fde68a;border:1px solid #854d0e}
+.badge-regulatory{background:#172554;color:#93c5fd;border:1px solid #1e40af}
+.agent-tag{font-size:9px;color:#52525b;font-weight:600}
+.x-badge{background:#581c87;color:#d8b4fe;font-size:8px;padding:1px 5px;border-radius:3px;font-weight:600}
+
+.card-title{font-size:12px;font-weight:600;color:#fafafa;line-height:1.4;margin-bottom:4px}
+.card-summary{font-size:11px;color:#a1a1aa;line-height:1.5;margin-bottom:8px}
+.card-tags{display:flex;flex-wrap:wrap;gap:3px;margin-bottom:8px}
+.htag{font-size:9px;color:#3b82f6;cursor:pointer;padding:1px 4px;border-radius:2px;background:#172554;transition:background .18s}
+.htag:hover{background:#1e3a5f}
+.card-footer{display:flex;justify-content:space-between;align-items:center;font-size:9px;color:#52525b}
+.card-link{color:#3b82f6;text-decoration:none;font-size:9px;font-weight:600}
+.card-link:hover{text-decoration:underline}
+
+/* ===== RIGHT PANEL ===== */
+.rp-btn{display:block;width:100%;padding:8px 0;border:none;border-radius:4px;background:#2563eb;color:#fff;font-size:11px;font-weight:600;cursor:pointer;margin-bottom:12px;transition:background .18s}
+.rp-btn:hover{background:#1d4ed8}
+
+.rp-section{margin-bottom:16px}
+.rp-title{font-size:9px;text-transform:uppercase;letter-spacing:1px;color:#52525b;font-weight:700;margin-bottom:8px}
+
+.q-item{background:#18181b;border:1px solid #27272a;border-radius:4px;padding:8px;margin-bottom:6px}
+.q-item-title{font-size:10px;font-weight:600;color:#e4e4e7;margin-bottom:2px}
+.q-item-src{font-size:9px;color:#71717a;margin-bottom:6px}
+.q-item-actions{display:flex;gap:4px}
+.q-btn{padding:3px 8px;border-radius:3px;font-size:9px;cursor:pointer;border:1px solid #27272a;background:#18181b;color:#a1a1aa;transition:all .18s}
+.q-btn.approve{border-color:#166534;color:#86efac;background:#052e16}
+.q-btn.approve:hover{background:#166534}
+.q-btn.dismiss{border-color:#7f1d1d;color:#fca5a5;background:#450a0a}
+.q-btn.dismiss:hover{background:#7f1d1d}
+
+.reg-item{padding:8px 0;border-bottom:1px solid #1a1a1e;display:flex;gap:6px;align-items:flex-start}
+.reg-item:last-child{border-bottom:none}
+.reg-urg{font-size:8px;font-weight:700;padding:2px 5px;border-radius:3px;flex-shrink:0;text-transform:uppercase;letter-spacing:.5px}
+.reg-urg.URGENT{background:#450a0a;color:#fca5a5}
+.reg-urg.MONITOR{background:#422006;color:#fde68a}
+.reg-urg.ROUTINE{background:#18181b;color:#71717a}
+.reg-text{font-size:10px;color:#a1a1aa;line-height:1.4}
+.reg-meta{font-size:9px;color:#52525b;margin-top:2px}
+
+/* ===== MODAL ===== */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:100;justify-content:center;align-items:center}
+.modal-overlay.open{display:flex}
+.modal{background:#18181b;border:1px solid #27272a;border-radius:8px;width:600px;max-height:85vh;overflow-y:auto;overscroll-behavior:contain}
+.modal-hdr{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid #27272a}
+.modal-hdr h2{font-size:14px;font-weight:700;color:#fafafa}
+.modal-close{background:none;border:none;color:#71717a;cursor:pointer;font-size:18px;line-height:1}
+.modal-body{padding:18px}
+.modal-body label{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:#71717a;font-weight:600;margin-bottom:4px;margin-top:10px}
+.modal-body label:first-child{margin-top:0}
+.modal-body input,.modal-body textarea,.modal-body select{width:100%;padding:7px 10px;border:1px solid #27272a;border-radius:4px;background:#09090b;color:#e4e4e7;font-size:11px;outline:none;font-family:inherit}
+.modal-body input:focus,.modal-body textarea:focus,.modal-body select:focus{border-color:#3b82f6}
+.modal-body textarea{min-height:60px;resize:vertical}
+.modal-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.modal-actions{display:flex;gap:8px;margin-top:16px}
+.modal-actions button{flex:1;padding:8px 0;border-radius:4px;font-size:11px;font-weight:600;cursor:pointer;border:none;transition:background .18s}
+.btn-eval{background:#27272a;color:#e4e4e7}.btn-eval:hover{background:#3f3f46}
+.btn-add{background:#2563eb;color:#fff}.btn-add:hover{background:#1d4ed8}
+.btn-add:disabled{opacity:.4;cursor:not-allowed}
+
+.eval-panel{margin-top:14px;padding:14px;background:#09090b;border:1px solid #27272a;border-radius:6px;display:none}
+.eval-panel.show{display:block}
+.eval-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.eval-item{padding:8px;background:#18181b;border-radius:4px;border:1px solid #27272a}
+.eval-label{font-size:9px;color:#71717a;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}
+.eval-val{font-size:13px;font-weight:700;color:#fafafa}
+.eval-val.high{color:#16a34a}.eval-val.med{color:#ca8a04}.eval-val.low{color:#dc2626}
+.eval-summary{margin-top:8px}
+.eval-summary-label{font-size:9px;color:#71717a;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.eval-summary-text{font-size:11px;color:#a1a1aa;line-height:1.5;padding:8px;background:#18181b;border-radius:4px;border:1px solid #27272a}
+.eval-tags{display:flex;flex-wrap:wrap;gap:3px;margin-top:6px}
+
+/* ===== NO-RESULTS ===== */
+.no-results{text-align:center;padding:40px 20px;color:#52525b}
+.no-results-icon{font-size:28px;margin-bottom:8px;opacity:.5}
+.no-results-text{font-size:12px}
+
+/* ===== PDF OVERLAY ===== */
+.pdf-gen{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:200;justify-content:center;align-items:center;color:#fafafa;font-size:14px}
+.pdf-gen.show{display:flex}
+</style>
 </head>
 <body>
-  <div id="hdr">
-    <div style="font-weight: 700; font-size: 13px;">PRIVATE CREDIT INTELLIGENCE MONITOR</div>
-    <div style="color: #71717a; font-size: 10px;">Life Insurance &middot; General Account &middot; 2026-02-25</div>
-  </div>
-  <div id="bnr" style="display:none;" onclick="jump()">
-    <div id="bt"></div>
-  </div>
-  <div id="kpi"></div>
-  <div id="bdy">
-    <div id="sb">
-      <div class="sl">Signal <div id="sp"></div></div>
-      <div class="sl">Domain <div id="dp"></div></div>
-      <div class="sl">Agent Source <div id="ap"></div></div>
-      <div class="sl">Scenarios <div id="scills"></div></div>
-      <div class="sl">Hashtags <div id="tpills"></div></div>
-      <input id="srch" placeholder="#search" oninput="render()">
-      <div id="qa">
-        <button class="qab" onclick="genPdf()">&#x1F4CA; Download PDF Report</button>
-        <button class="qab" style="background: transparent; border-color: #27272a;" onclick="reset()">&#x21BA; Reset Filters</button>
+<!-- ===== DASHBOARD SHELL ===== -->
+<div class="dashboard">
+  <!-- HEADER -->
+  <div class="hdr">
+    <div class="hdr-left">
+      <div class="hdr-brand">
+        <span>PRIVATE CREDIT INTELLIGENCE MONITOR</span>
+        <span class="hdr-brand-sub">ReviveERM&trade; &mdash; a subsidiary of Spiritus Partners, Inc.</span>
       </div>
     </div>
-    <div id="main">
-      <div id="synth"></div>
-      <div id="tally"></div>
-      <div id="grid"></div>
+    <div class="hdr-right" id="hdrRight">Life Insurance · General Account · Mar 1, 2026</div>
+  </div>
+
+  <!-- ALERT BANNER -->
+  <div class="alert-banner" id="alertBanner" onclick="scrollToFirstAlert()">
+    <span id="alertBannerText"></span>
+  </div>
+
+  <!-- KPI BAR -->
+  <div class="kpi-bar" id="kpiBar"></div>
+
+  <!-- LEFT SIDEBAR -->
+  <div class="sidebar" id="sidebar">
+    <!-- Signal Filters -->
+    <div class="sb-section">
+      <div class="sb-title">Signal</div>
+      <div class="sb-pills" id="signalPills"></div>
     </div>
-    <div id="rp">
-      <button id="upbtn" onclick="openUpload()">+ SUBMIT CONTENT</button><div class="rh">Regulatory Feed</div>
-      <div id="rl"></div>
+    <!-- Domain Filters -->
+    <div class="sb-section">
+      <div class="sb-title">Domain</div>
+      <div class="sb-pills" id="domainPills"></div>
+    </div>
+    <!-- Agent Source -->
+    <div class="sb-section">
+      <div class="sb-title">Agent Source</div>
+      <div class="sb-pills" id="agentPills"></div>
+    </div>
+    <!-- Scenarios -->
+    <div class="sb-section">
+      <div class="sb-title">Scenarios</div>
+      <div class="sb-pills" id="scenarioPills"></div>
+    </div>
+    <!-- Hashtags -->
+    <div class="sb-section">
+      <div class="sb-title">Trending Tags</div>
+      <div class="sb-pills" id="hashtagPills"></div>
+    </div>
+    <!-- Search -->
+    <div class="sb-section">
+      <div class="sb-title">Search</div>
+      <input type="text" id="search" placeholder="Search cards..." autocomplete="off">
+    </div>
+    <!-- Actions -->
+    <div class="sb-section">
+      <div class="sb-title">Quick Actions</div>
+      <button class="sb-btn primary" onclick="genPdf()">Download PDF Report</button>
+      <button class="sb-btn" onclick="resetFilters()">Reset Filters</button>
     </div>
   </div>
 
+  <!-- MAIN CONTENT -->
+  <div class="main" id="mainContent"></div>
+
+  <!-- RIGHT PANEL -->
+  <div class="rpanel">
+    <button class="rp-btn" onclick="openUpload()">SUBMIT CONTENT</button>
+    <div class="rp-section">
+      <div class="rp-title">Content Queue</div>
+      <div id="queueList"><div style="font-size:10px;color:#52525b">No pending items</div></div>
+    </div>
+    <div class="rp-section">
+      <div class="rp-title">Regulatory Feed</div>
+      <div id="regFeed"></div>
+    </div>
+  </div>
+
+  <!-- COPYRIGHT BAR -->
+  <div class="copyright-bar">
+    <span>&copy; 2026 ReviveERM&trade; &mdash; a subsidiary of Spiritus Partners, Inc., a Delaware corporation. All rights reserved.</span>
+  </div>
+</div>
+
+<!-- ===== UPLOAD MODAL ===== -->
+<div class="modal-overlay" id="uploadModal">
+  <div class="modal">
+    <div class="modal-hdr">
+      <h2>Submit Content</h2>
+      <button class="modal-close" onclick="closeUpload()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <label>Title</label>
+      <input type="text" id="uTitle" placeholder="Article or report title">
+      <label>Source / Firm</label>
+      <input type="text" id="uSource" placeholder="e.g. Federal Reserve, Moody's">
+      <label>URL</label>
+      <input type="url" id="uUrl" placeholder="https://...">
+      <label>Summary / Key Findings</label>
+      <textarea id="uSummary" placeholder="1-2 sentence summary of key findings"></textarea>
+      <label>File Upload (PDF/TXT)</label>
+      <input type="file" id="uFile" accept=".pdf,.txt,.docx" style="font-size:10px">
+      <div class="modal-row">
+        <div>
+          <label>Domain</label>
+          <select id="uDomain">
+            <option value="CreditMarkets">Credit Markets</option>
+            <option value="Macro">Macro &amp; Rates</option>
+            <option value="Regulatory">Regulatory</option>
+            <option value="Actuarial">Actuarial/ALM</option>
+          </select>
+        </div>
+        <div>
+          <label>Signal</label>
+          <select id="uSignal">
+            <option value="Monitor">Monitor</option>
+            <option value="Alert">Alert</option>
+            <option value="Confirmed">Confirmed</option>
+            <option value="Regulatory">Regulatory</option>
+          </select>
+        </div>
+      </div>
+      <label>Tags (comma separated)</label>
+      <input type="text" id="uTags" placeholder="#privatecredit, #directlending">
+      <!-- Evaluation Panel -->
+      <div class="eval-panel" id="evalPanel">
+        <div class="eval-grid">
+          <div class="eval-item"><div class="eval-label">Relevance Score</div><div class="eval-val" id="evalRelevance">—</div></div>
+          <div class="eval-item"><div class="eval-label">Credibility</div><div class="eval-val" id="evalCredibility">—</div></div>
+          <div class="eval-item"><div class="eval-label">Suggested Signal</div><div class="eval-val" id="evalSignal">—</div></div>
+          <div class="eval-item"><div class="eval-label">Suggested Domain</div><div class="eval-val" id="evalDomain">—</div></div>
+        </div>
+        <div class="eval-summary">
+          <div class="eval-summary-label">Auto-Summary</div>
+          <div class="eval-summary-text" id="evalSummary">—</div>
+        </div>
+        <div class="eval-summary" style="margin-top:8px">
+          <div class="eval-summary-label">Suggested Tags</div>
+          <div class="eval-tags" id="evalTags"></div>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-eval" onclick="runEval()">Evaluate</button>
+        <button class="btn-add" id="btnAddMonitor" onclick="addToMonitor()" disabled>Add to Monitor</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PDF Generation Overlay -->
+<div class="pdf-gen" id="pdfOverlay">Generating PDF Report...</div>
+
 <script>
+// ===== CGI BIN BASE =====
+const CGI = "__CGI_BIN__";
+
+// ===== DATA: Intelligence Cards =====
 const C = [
-  { id: "a1c001", ti: "IAIS GIMAR 2025: Private Credit Top Supervisory Priority", sr: "IAIS Publications", ty: "regulatory", dt: "2026-02-17", dm: "Regulatory", sg: "Regulatory", ag: "A1", tg: ["#iaissalert", "#privatecredit", "#lifeannuity", "#naicupdate"], su: "IAIS flags private credit valuation uncertainty and liquidity mismatch in life insurer general accounts.", url: "https://www.iais.org/activities-topics/financial-stability/gimar/" },
-  { id: "a1c002", ti: "Life Insurers Role in Private Credit Intermediation", sr: "Federal Reserve Notes", ty: "regulatory", dt: "2026-02-10", dm: "Regulatory", sg: "Regulatory", ag: "A1", tg: ["#generalaccount", "#lifeannuity", "#clo", "#rbcoptimization"], su: "Life insurer private credit at 14% of general account assets; share of risky debt roughly doubled since 2007.", url: "https://www.federalreserve.gov/econres/notes/feds-notes/life-insurers-role-in-the-intermediation-chain-of-public-and-private-credit-to-risky-firms-20250321.html" },
-  { id: "a1c003", ti: "CLO Tranche Capital Efficiency for Life Insurer General Accounts", sr: "PineBridge Investments", ty: "article", dt: "2026-02-14", dm: "CreditMarkets", sg: "Confirmed", ag: "A1", tg: ["#clo", "#rbcoptimization", "#generalaccount", "#naicupdate"], su: "High-quality CLO tranches offer compelling spreads and capital efficiency vs same-rated corporate debt.", url: "https://www.pinebridge.com/en/insights/the-case-for-collateralized-loan-obligations-for-global-insurers" },
-  { id: "a1c005", ti: "MM Covenant Pressure: ICR Below 1.5x in 47% of Borrowers", sr: "Deloitte Insurance Insights", ty: "article", dt: "2026-01-28", dm: "CreditMarkets", sg: "Alert", ag: "A1", tg: ["#distresseddebt", "#covenantbreach", "#pikrisk", "#defaultcycle", "#lme"], su: "47% of middle market borrowers below 1.5x ICR; covenant-lite exposure rising across direct lending.", url: "https://www.deloitte.com/us/en/insights/industry/financial-services/financial-services-industry-outlooks/insurance-industry-outlook.html" },
-  { id: "a1c006", ti: "Direct Lending Recovery Rates: Q4 2025 Analysis", sr: "Lincoln International", ty: "article", dt: "2026-02-21", dm: "CreditMarkets", sg: "Alert", ag: "A1", tg: ["#directlending", "#recoveryrates", "#defaultcycle"], su: "LPMI Q4 2025 up 1.9%; 'Bad PIK' interest surged to 6.4%; foreclosures nearly double prior three years.", url: "https://www.lincolninternational.com/perspectives/indices/" },
-  { id: "a1c007", ti: "Actuarial Analysis: Bridging the Private Credit Modeling Gap", sr: "Milliman Actuarial Insight", ty: "article", dt: "2026-02-18", dm: "Actuarial", sg: "Monitor", ag: "A1", tg: ["#actuarial", "#alm", "#lifeannuity"], su: "Proposed nearest-neighbor method for projecting cash flows to support consistent ALM treatment of private credit.", url: "https://www.milliman.com/en/insight/private-credit-modeling-gap-nearest-neighbor" },
-  { id: "a2c001", ti: "State of Distressed Debt 2026: Hertz, First Brands, LME", sr: "Bloomberg FICC Focus", ty: "podcast", dt: "2026-01-20", dm: "CreditMarkets", sg: "Alert", ag: "A2", tg: ["#distresseddebt", "#lme", "#ficcfocus", "#creditcrunch", "#defaultcycle", "#pikrisk"], su: "Hebert/Brendel: HY spreads at all-time tights; LME activity elevated; First Brands PIK stress.", url: "https://www.bloomberg.com/news/audio/2026-01-20/state-of-distressed-debt-2026-outlook-stg-first-brands-hertz" },
-  { id: "a3c001", ti: "HY OAS: 312bps +4 vs Prior Week", sr: "FRED", ty: "market_data", dt: "2026-02-20", dm: "Macro", sg: "Confirmed", ag: "A3", tg: ["#hyoutlook", "#macrorates", "#generalaccount"], su: "HY OAS 312bps, +4 vs prior week. Spread widening trend intact for third consecutive week.", url: "https://fred.stlouisfed.org/series/BAMLH0A0HYM2" },
-  { id: "a3c003", ti: "C&I Loan Tightening: 18.2% Net Tightening Standards", sr: "FRED", ty: "market_data", dt: "2026-02-20", dm: "Macro", sg: "Confirmed", ag: "A3", tg: ["#macrorates", "#directlending", "#defaultcycle"], su: "18.2% of banks net tightening C&I standards; private credit bank displacement accelerating.", url: "https://fred.stlouisfed.org/series/DRTSCILM" },
-  { id: "a5c001", ti: "Distressed Cycle Signal", sr: "A5 Synthesis", ty: "article", dt: "2026-02-20", dm: "CreditMarkets", sg: "Alert", ag: "A5", tg: ["#distresseddebt", "#lme", "#pikrisk", "#covenantbreach", "#defaultcycle"], su: "Distressed cluster convergence: LME, PIK stress, covenant breach across 6 source cards.", url: "https://www.bloomberg.com/" },
-    { id: "a4c001", ti: "Life Insurers' Private Credit Investments and Annuity Market Share Capture", sr: "Federal Reserve Bank of Chicago - Working Paper (June 2025)", ty: "regulatory", dt: "2026-03-01", dm: "Regulatory", sg: "Monitor", ag: "A4", tg: ["#privatecredit", "#lifeannuity", "#generalaccount", "#rbcoptimization"], su: "PE-owned insurers concentrate in opaque private credit — financial borrower loans and private ABS create valuation and correlation risk beyond traditional peers.", url: "https://www.chicagofed.org/publications/working-papers" }
+  {id:"a1c001",ti:"IAIS GIMAR 2025: Private Credit Top Supervisory Priority",sr:"IAIS Publications",ty:"regulatory",dt:"2026-02-17",dm:"Regulatory",sg:"Regulatory",ag:"A1",tg:["#iaissalert","#privatecredit","#lifeannuity","#naicupdate"],su:"IAIS flags private credit valuation uncertainty and liquidity mismatch in life insurer general accounts.",url:"https://www.iais.org/activities-topics/financial-stability/gimar/",xs:false},
+  {id:"a1c002",ti:"Life Insurers Role in Private Credit Intermediation",sr:"Federal Reserve Notes",ty:"regulatory",dt:"2026-02-10",dm:"Regulatory",sg:"Regulatory",ag:"A1",tg:["#generalaccount","#lifeannuity","#clo","#rbcoptimization"],su:"Life insurer private credit at 14% of general account assets; share of risky debt roughly doubled since 2007.",url:"https://www.federalreserve.gov/econres/notes/feds-notes/life-insurers-role-in-the-intermediation-chain-of-public-and-private-credit-to-risky-firms-20250321.html",xs:false},
+  {id:"a1c003",ti:"CLO Tranche Capital Efficiency for Life Insurer General Accounts",sr:"PineBridge Investments",ty:"article",dt:"2026-02-14",dm:"CreditMarkets",sg:"Confirmed",ag:"A1",tg:["#clo","#rbcoptimization","#generalaccount","#naicupdate"],su:"High-quality CLO tranches offer compelling spreads and capital efficiency vs same-rated corporate debt.",url:"https://www.pinebridge.com/en/insights/the-case-for-collateralized-loan-obligations-for-global-insurers",xs:false},
+  {id:"a1c005",ti:"MM Covenant Pressure: ICR Below 1.5x in 47% of Borrowers",sr:"Deloitte Insurance Insights",ty:"article",dt:"2026-01-28",dm:"CreditMarkets",sg:"Alert",ag:"A1",tg:["#distresseddebt","#covenantbreach","#pikrisk","#defaultcycle","#lme"],su:"47% of middle market borrowers below 1.5x ICR; covenant-lite exposure rising across direct lending.",url:"https://www.deloitte.com/us/en/insights/industry/financial-services/financial-services-industry-outlooks/insurance-industry-outlook.html",xs:false},
+  {id:"a1c006",ti:"Direct Lending Recovery Rates: Q4 2025 Analysis",sr:"Lincoln International",ty:"article",dt:"2026-02-21",dm:"CreditMarkets",sg:"Alert",ag:"A1",tg:["#directlending","#recoveryrates","#defaultcycle"],su:"LPMI Q4 2025 up 1.9%; 'Bad PIK' interest surged to 6.4%; foreclosures nearly double prior three years.",url:"https://www.lincolninternational.com/perspectives/indices/",xs:false},
+  {id:"a1c007",ti:"Actuarial Analysis: Bridging the Private Credit Modeling Gap",sr:"Milliman Actuarial Insight",ty:"article",dt:"2026-02-18",dm:"Actuarial",sg:"Monitor",ag:"A1",tg:["#actuarial","#alm","#lifeannuity"],su:"Proposed nearest-neighbor method for projecting cash flows to support consistent ALM treatment of private credit.",url:"https://www.milliman.com/en/insight/private-credit-modeling-gap-nearest-neighbor",xs:false},
+  {id:"a2c001",ti:"State of Distressed Debt 2026: Hertz, First Brands, LME",sr:"Bloomberg FICC Focus",ty:"podcast",dt:"2026-01-20",dm:"CreditMarkets",sg:"Alert",ag:"A2",tg:["#distresseddebt","#lme","#ficcfocus","#creditcrunch","#defaultcycle","#pikrisk"],su:"Hebert/Brendel: HY spreads at all-time tights; LME activity elevated; First Brands PIK stress.",url:"https://www.bloomberg.com/podcasts/ficc-focus",xs:false},
+  {id:"a3c001",ti:"HY OAS: 312bps +4 vs Prior Week",sr:"FRED",ty:"market_data",dt:"2026-02-20",dm:"Macro",sg:"Confirmed",ag:"A3",tg:["#hyoutlook","#macrorates","#generalaccount"],su:"HY OAS 312bps, +4 vs prior week. Spread widening trend intact for third consecutive week.",url:"https://fred.stlouisfed.org/series/BAMLH0A0HYM2",xs:false},
+  {id:"a3c003",ti:"C&I Loan Tightening: 18.2% Net Tightening Standards",sr:"FRED",ty:"market_data",dt:"2026-02-20",dm:"Macro",sg:"Confirmed",ag:"A3",tg:["#macrorates","#directlending","#defaultcycle"],su:"18.2% of banks net tightening C&I standards; private credit bank displacement accelerating.",url:"https://fred.stlouisfed.org/series/DRTSCILM",xs:false},
+  {id:"a5c001",ti:"Distressed Cycle Signal",sr:"A5 Synthesis",ty:"article",dt:"2026-02-20",dm:"CreditMarkets",sg:"Alert",ag:"A5",tg:["#distresseddebt","#lme","#pikrisk","#covenantbreach","#defaultcycle"],su:"Distressed cluster convergence: LME, PIK stress, covenant breach across 6 source cards.",url:"",xs:false},
+  {id:"a4c001",ti:"Life Insurers' Private Credit Investments and Annuity Market Share Capture",sr:"Federal Reserve Bank of Chicago",ty:"regulatory",dt:"2026-03-01",dm:"Regulatory",sg:"Monitor",ag:"A4",tg:["#privatecredit","#lifeannuity","#generalaccount","#rbcoptimization"],su:"PE-owned insurers concentrate in opaque private credit — financial borrower loans and private ABS create valuation and correlation risk beyond traditional peers.",url:"https://www.chicagofed.org/publications/working-papers/2025/2025-09",xs:false},
+  {id:"n001",ti:"BIS: Doom Loop Risk in Life Insurer Private Credit",sr:"Bank for International Settlements",ty:"regulatory",dt:"2025-10-27",dm:"CreditMarkets",sg:"Alert",ag:"A1",tg:["#privatecredit","#systemicrisk","#doomloop","#valuationopacity","#lifeannuity"],su:"BIS identifies self-reinforcing doom loop: illiquid private credit → margin calls → forced fire sales. Smaller rating agencies inflating creditworthiness assessments.",url:"https://www.bis.org/publ/bppdf/bispap161.htm",xs:false},
+  {id:"n002",ti:"Fed Financial Stability Report: Life Insurer Leverage Elevated",sr:"Federal Reserve Board",ty:"market_data",dt:"2025-11-07",dm:"Macro",sg:"Confirmed",ag:"A3",tg:["#lifeannuity","#leverage","#financialstability","#privatecredit"],su:"Life insurer leverage in upper quartile of historical distribution; formally flagged as 'notable' financial sector vulnerability.",url:"https://www.federalreserve.gov/publications/november-2025-financial-stability-report-leverage-in-the-financial-sector.htm",xs:false},
+  {id:"n003",ti:"AM Best: Private Credit Holdings — Risk Management Critical",sr:"AM Best",ty:"article",dt:"2025-10-20",dm:"CreditMarkets",sg:"Confirmed",ag:"A1",tg:["#privatecredit","#privateletterratings","#alm","#peerbenchmark","#generalaccount"],su:"L/A insurer private placements grew to $1.8T (45%+ of bond portfolios). PLR-rated structured non-MBS at 13% CAGR; top-concentrated companies identified.",url:"https://web.ambest.com/docs/default-source/events/2026/special-report---managing-risk-is-critical-as-private-credit-holdings-increase.pdf",xs:false},
+  {id:"n004",ti:"IAIS Issues Paper: Structural Shifts in Life Insurance",sr:"IAIS",ty:"regulatory",dt:"2025-11-18",dm:"Regulatory",sg:"Regulatory",ag:"A4",tg:["#iais","#privatecredit","#alternativeassets","#reinsurance","#solvency"],su:"First globally agreed classification of alternative assets; AIR recapture risk as solvency cliff; warns of 'herd behaviour' in insurer portfolio strategy.",url:"https://www.iais.org/2025/11/insurance-supervisors-reach-globally-agreed-path-forward-on-addressing-risks-from-structural-shifts-in-the-life-insurance-sector/",xs:false},
+  {id:"n005",ti:"NAIC RBC: Collateral Loan & CLO Factor Overhaul",sr:"Mayer Brown / NAIC",ty:"regulatory",dt:"2026-02-24",dm:"Regulatory",sg:"Regulatory",ag:"A4",tg:["#naicupdate","#rbc","#clo","#capitalrequirements","#lifeannuity"],su:"Two active RBC reform tracks: collateral loan factors by underlying type, CLO C-1 cliff-risk for junior tranches. Both targeting year-end 2026 adoption.",url:"https://www.mayerbrown.com/en/insights/publications/2026/02/naic-working-group-discusses-potential-changes-to-life-risk-based-capital-factors-for-certain-asset-classes",xs:false},
+  {id:"n006",ti:"Fitch: Alt IM-Affiliated Insurers Face Higher Private Credit Risk",sr:"Fitch Ratings",ty:"article",dt:"2025-10-24",dm:"CreditMarkets",sg:"Alert",ag:"A1",tg:["#fitch","#privatecredit","#altim","#creditrisk","#lifeannuity"],su:"Fitch differentiates rating treatment for alt IM-affiliated vs. traditional insurers on private credit — portfolio composition now a direct rating factor.",url:"https://www.fitchratings.com/research/insurance/fitch-ratings-life-insurers-tied-to-alt-ims-see-higher-private-credit-exposure-risk-24-10-2025",xs:false},
+  {id:"n007",ti:"Proskauer: 2025 Private Credit Restructuring Year in Review",sr:"Proskauer Rose LLP",ty:"article",dt:"2026-01-28",dm:"CreditMarkets",sg:"Monitor",ag:"A2",tg:["#privatecredit","#defaultcycle","#restructuring","#lme","#distresseddebt"],su:"Q4 2025 default rate 2.46%; headline rates understate stress as borrowers engineer around defaults. Golden directors, Article 9 strict foreclosure evolving rapidly.",url:"https://www.jdsupra.com/legalnews/a-test-of-endurance-2025-private-credit-6147211/",xs:false},
+  {id:"n008",ti:"Boston Fed: Private Credit Growth — Financial Stability Risk?",sr:"Federal Reserve Bank of Boston",ty:"article",dt:"2025-05-21",dm:"Macro",sg:"Monitor",ag:"A3",tg:["#privatecredit","#bdc","#bankfunding","#systemicrisk","#financialstability"],su:"Banks are primary funding source for private credit growth; BDC reliance on bank credit lines creates dual-channel vulnerability not captured by standalone PC risk assessments.",url:"https://www.bostonfed.org/publications/current-policy-perspectives/2025/could-the-growth-of-private-credit-pose-a-risk-to-financial-system-stability.aspx",xs:false}
 ];
 
+// ===== DATA: Regulatory Feed =====
 const R = [
-  { id: "a4c003", ti: "NAIC RBC 2026 Framework Update", ug: "URGENT", ju: "NAIC", dt: "2026-02-21" },
-  { id: "a1c001", ti: "IAIS GIMAR 2025: Private Credit Priority", ug: "ROUTINE", ju: "IAIS", dt: "2026-02-17" }
+  {id:"a4c003",ti:"NAIC RBC 2026 Framework Update",ug:"URGENT",ju:"NAIC",dt:"2026-02-21"},
+  {id:"n005",ti:"NAIC Collateral Loan & CLO RBC Factors",ug:"URGENT",ju:"NAIC",dt:"2026-02-24"},
+  {id:"a1c001",ti:"IAIS GIMAR 2025: Private Credit Priority",ug:"ROUTINE",ju:"IAIS",dt:"2026-02-17"},
+  {id:"n004",ti:"IAIS Structural Shifts Issues Paper",ug:"MONITOR",ju:"IAIS",dt:"2025-11-18"}
 ];
 
-const SK = {
-  hy_oas: { l: "High Yield Spread", u: "bps", v: [285, 292, 298, 301, 305, 308, 304, 307, 310, 312], b: true },
-  ig_oas: { l: "Investment Grade Spread", u: "bps", v: [88, 89, 90, 91, 92, 91, 93, 94, 93, 95], b: true },
-  ci: { l: "Bank Lending Tightening", u: "%", v: [14.1, 15.2, 16.0, 16.8, 17.1, 17.5, 17.9, 18.0, 18.1, 18.2], b: false },
-  dl_spread: { l: "Direct Lending Spread", u: "bps", v: [540, 545, 542, 548, 550, 555, 553, 558, 560, 562], b: true }
-};
+// ===== DATA: KPI Sparklines =====
+const SK = [
+  {k:"hy_oas",lb:"High Yield Spread",un:"bps",d:[285,292,298,301,305,308,304,307,310,312],bad_up:true},
+  {k:"ig_oas",lb:"Investment Grade Spread",un:"bps",d:[88,89,90,91,92,91,93,94,93,95],bad_up:true},
+  {k:"ci",lb:"Bank Lending Tightening",un:"%",d:[14.1,15.2,16.0,16.8,17.1,17.5,17.9,18.0,18.1,18.2],bad_up:false},
+  {k:"dl_spread",lb:"Direct Lending Spread",un:"bps",d:[540,545,542,548,550,555,553,558,560,562],bad_up:true}
+];
 
-const TT = ["#naicupdate", "#lifeannuity", "#distresseddebt", "#lme", "#pikrisk", "#clo", "#rbcoptimization", "#generalaccount", "#privatecredit", "#iaissalert", "#defaultcycle", "#actuarial", "#xsource", "#bdc", "#liquidityrisk", "#abf"];
-const SG = { Alert: { c: "#dc2626", bg: "#450a0a", i: "\u{1F534}", b: "#dc2626" }, Confirmed: { c: "#16a34a", bg: "#052e16", i: "\u{1F7E2}", b: "#16a34a" }, Monitor: { c: "#ca8a04", bg: "#1c1400", i: "\u{1F7E1}", b: "#ca8a04" }, Regulatory: { c: "#2563eb", bg: "#0c1a3d", i: "\u{1F535}", b: "#2563eb" } };
-const SI = { article: "\u{1F4C4}", podcast: "\u{1F399}", market_data: "\u{1F4CA}", regulatory: "\u2696" };
-const AC = { A1: "#a1a1aa", A2: "#c084fc", A3: "#2dd4bf", A4: "#60a5fa", A5: "#fbbf24" };
-const AL = { A1: "Market Intel", A2: "Credit/LME", A3: "Macro Strategy", A4: "Reg Compliance", A5: "AI Synthesis" };
-const DM = ["CreditMarkets", "Macro", "Regulatory", "Actuarial"];
-const DL = { CreditMarkets: "Credit Markets", Macro: "Macro & Rates", Regulatory: "Regulatory", Actuarial: "Actuarial/ALM" };
-const DA = { CreditMarkets: "#1e40af", Macro: "#991b1b", Regulatory: "#1e3a5f", Actuarial: "#0f766e" };
-const UC = { MONITOR: { c: "#ca8a04", bg: "#1c1400" }, URGENT: { c: "#dc2626", bg: "#450a0a" }, ROUTINE: { c: "#71717a", bg: "#18181b" } };
-const SC = [ { n: "LME Stress", t: ["#lme", "#distresseddebt"] }, { n: "RBC Optimization", t: ["#rbcoptimization", "#clo"] }, { n: "Reg Headwinds", t: ["#naicupdate", "#iaissalert"] }, { n: "ALM Risk", t: ["#actuarial", "#lifeannuity"] } ];
+// ===== CONFIG =====
+const DOMAINS = {CreditMarkets:"Credit Markets",Macro:"Macro & Rates",Regulatory:"Regulatory",Actuarial:"Actuarial/ALM"};
+const AGENTS = {A1:"Market Intel",A2:"Credit/LME",A3:"Macro Strategy",A4:"Reg Compliance",A5:"AI Synthesis"};
+const SIG_COLORS = {Alert:"#dc2626",Confirmed:"#16a34a",Monitor:"#ca8a04",Regulatory:"#2563eb"};
+const SCENARIOS = [
+  {n:"LME Stress",tg:["#lme","#distresseddebt"]},
+  {n:"RBC Optimization",tg:["#rbcoptimization","#clo"]},
+  {n:"Reg Headwinds",tg:["#naicupdate","#iaissalert"]},
+  {n:"ALM Risk",tg:["#actuarial","#lifeannuity"]}
+];
+const BLOCKED = ["ft.com"];
+const HIGH_CRED = ["federal reserve","iais","bis","naic","fed ","am best","fitch","moody","s&p","sec","fdic","fsb","ecb"];
+const MED_CRED = ["morgan stanley","goldman","jp morgan","barclays","citi","ubs","deutsche","bofa","pinebridge","lincoln","deloitte","milliman","mayer brown","proskauer","bloomberg"];
+const REL_KEYS = ["private credit","life insur","general account","clo","direct lending","rbc","alm","annuit","covenant","default","recovery","distress","lme","valuation","leverag","solvency","reinsur","capital"];
 
-const BLOCKED_DOMAINS = ["ft.com"]; function isBlockedUrl(url) { if (!url) return false; try { var h = new URL(url).hostname; return BLOCKED_DOMAINS.some(function(d) { return h === d || h.endsWith("." + d); }); } catch(e) { return BLOCKED_DOMAINS.some(function(d) { return url.indexOf(d) !== -1; }); } } let fSig = [], fDom = "All", fAgt = [], fHash = "", fScen = null, hlId = null, hlTimer = null;
+// ===== STATE =====
+let filters = {signal:null,domain:null,agent:null,scenario:null,hashtag:null,search:""};
+let allCards = [...C];
+let queueItems = [];
 
-function $(id) { return document.getElementById(id); }
-function mk(tag, p, kids) {
-  const el = document.createElement(tag);
-  if (p.style) Object.assign(el.style, p.style);
-  if (p.cls) el.className = p.cls;
-  if (p.html) el.innerHTML = p.html;
-  if (p.txt) el.textContent = p.txt;
-  if (p.onclick) el.onclick = p.onclick;
-  if (p.id) el.id = p.id;
-  if (p.href) el.href = p.href;
-  (kids || []).forEach(k => { if (k) el.appendChild(typeof k === "string" ? document.createTextNode(k) : k); });
-  return el;
-}
-function pill(label, on, color, fn) {
-  const b = mk("button", { cls: "pl" + (on ? " on" : "") });
-  b.textContent = label;
-  b.style.color = on && color ? color : "#71717a";
-  if (on && color) b.style.borderColor = color;
-  b.onclick = fn;
-  return b;
+// ===== INIT (removed, using inline DOMContentLoaded) =====
+
+function setHeaderDate(){
+  const d = new Date();
+  const m = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  document.getElementById("hdrRight").textContent = `Life Insurance · General Account · ${m[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
 }
 
-function buildSidebar() {
-  $("sp").innerHTML = ""; $("dp").innerHTML = ""; $("ap").innerHTML = ""; $("tpills").innerHTML = ""; $("scills").innerHTML = "";
-  ["Alert", "Confirmed", "Monitor", "Regulatory"].forEach(s => {
-    const on = fSig.includes(s);
-    $("sp").appendChild(pill(SG[s].i + " " + s, on, SG[s].c, () => { fSig = on ? fSig.filter(x => x !== s) : [...fSig, s]; render(); }));
-  });
-  ["All", ...DM].forEach(d => {
-    const on = fDom === d;
-    $("dp").appendChild(pill(DL[d] || d, on, "#a1a1aa", () => { fDom = d; render(); }));
-  });
-  ["A1", "A2", "A3", "A4", "A5"].forEach(a => {
-    const on = fAgt.includes(a);
-    $("ap").appendChild(pill(a + ": " + AL[a], on, AC[a], () => { fAgt = on ? fAgt.filter(x => x !== a) : [...fAgt, a]; render(); }));
-  });
-  SC.forEach(s => {
-    const on = fScen === s.n;
-    const b = mk("button", { cls: "scp" + (on ? " on" : ""), txt: s.n });
-    b.onclick = () => { if (fScen === s.n) { fScen = null; fHash = ""; $("srch").value = ""; } else { fScen = s.n; fHash = s.t.join(" "); $("srch").value = fHash; } render(); };
-    $("scills").appendChild(b);
-  });
-  TT.forEach(t => {
-    const b = mk("button", { cls: "tp", txt: t });
-    b.onclick = () => { fHash = t; $("srch").value = t; render(); };
-    $("tpills").appendChild(b);
-  });
-}
-
-function buildKPI() {
-  const d = $("kpi"); d.innerHTML = "";
-  Object.entries(SK).forEach(([k, s]) => {
-    const v = s.v, lat = v[v.length - 1], prv = v[v.length - 2], delta = +(lat - prv).toFixed(1);
-    const up = delta > 0, bad = s.b ? up : !up, col = delta === 0 ? "#71717a" : bad ? "#dc2626" : "#16a34a";
-    const tile = mk("div", { cls: "kt" }, [
-      mk("div", { cls: "kl", txt: s.l }),
-      mk("div", { style: { display: "flex", alignItems: "flex-end", justifyContent: "space-between" } }, [
-        mk("div", {}, [
-          mk("span", { cls: "kv", txt: lat.toFixed(1) }),
-          mk("span", { cls: "ku", txt: s.u }),
-          mk("span", { cls: "kd", txt: (up ? "\u25B2" : "\u25BC") + Math.abs(delta), style: { color: col } })
-        ]),
-        (() => {
-          const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-          svg.setAttribute("width", "75"); svg.setAttribute("height", "26");
-          const mn = Math.min(...v), mx = Math.max(...v), r = mx - mn || 1;
-          const pts = v.map((x, i) => (i === 0 ? "M" : "L") + ((i / (v.length - 1)) * 75).toFixed(1) + "," + (26 - ((x - mn) / r) * 22 - 2).toFixed(1)).join(" ");
-          const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-          path.setAttribute("d", pts); path.setAttribute("fill", "none"); path.setAttribute("stroke", col); path.setAttribute("stroke-width", "1.5");
-          svg.appendChild(path); return svg;
-        })()
-      ])
-    ]);
-    d.appendChild(tile);
-  });
-}
-
-function buildReg() {
-  const rl = $("rl"); rl.innerHTML = "";
-  R.forEach(r => {
-    const u = UC[r.ug] || UC.ROUTINE;
-    const btn = mk("button", { cls: "ri", style: { background: u.bg } });
-    btn.appendChild(mk("div", { style: { display: "flex", justifyContent: "space-between" } }, [mk("span", { cls: "ru", txt: r.ug, style: { color: u.c } }), mk("span", { cls: "rj", txt: r.ju })]));
-    btn.appendChild(mk("div", { cls: "rt", txt: r.ti }));
-    btn.onclick = () => { const card = C.find(x => x.id === r.id); if (card && card.url) window.open(card.url, '_blank'); };
-    rl.appendChild(btn);
-  });
-}
-
-function buildSynthesis(vis) {
-  const s = $("synth"); s.innerHTML = "";
-  const alerts = vis.filter(x => x.sg === "Alert");
-  const synth = mk("div", { cls: "sy-icon", txt: "\u2728" });
-  const txt = mk("div", { cls: "sy-txt" });
-  const h = mk("div", { cls: "sy-h" }, [mk("span", { txt: "AI SYNTHESIS ENGINE" }), mk("span", { txt: "ACTIVE", style: { color: "#16a34a" } })]);
-  let bTxt = "Stable conditions observed across active monitors.";
-  if (alerts.length > 3) bTxt = "CRITICAL: Cluster of " + alerts.length + " alerts detected in Distressed/LME. Life insurer exposure to senior creditor displacement is elevating. Contagion risk rising.";
-  else if (alerts.length > 0) bTxt = "Advisory: " + alerts.length + " active alert(s) in credit markets. Monitoring for cross-domain contagion and duration mismatch.";
-  txt.appendChild(h); txt.appendChild(mk("div", { cls: "sy-b", txt: bTxt }));
-  s.appendChild(synth); s.appendChild(txt);
-}
-
-function jump() { const a = C.filter(x => x.sg === "Alert"); if (a.length) highlight(a[0].id); }
-function highlight(id) {
-  hlId = id; render();
-  if (hlTimer) clearTimeout(hlTimer);
-  hlTimer = setTimeout(() => { hlId = null; render(); }, 3000);
-  const el = document.getElementById("c_" + id); if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
-}
-
-function reset() { fSig = []; fDom = "All"; fAgt = []; fHash = ""; fScen = null; $("srch").value = ""; render(); }
-
-function render() {
-  fHash = $("srch").value; buildSidebar();
-  const vis = C.filter(c => { if (isBlockedUrl(c.url)) return false;
-    if (fSig.length && !fSig.includes(c.sg)) return false;
-    if (fDom !== "All" && c.dm !== fDom) return false;
-    if (fAgt.length && !fAgt.includes(c.ag)) return false;
-    if (fHash) {
-      const h = fHash.toLowerCase().split(" ").filter(x => x);
-      if (!h.every(term => c.tg.some(t => t.toLowerCase().includes(term.replace(/^#/, ""))) || c.ti.toLowerCase().includes(term))) return false;
-    }
-    return true;
-  });
-  buildSynthesis(vis);
-  const alerts = C.filter(x => x.sg === "Alert");
-  if (alerts.length) { $("bnr").style.display = "flex"; $("bt").textContent = "\u{1F534} " + alerts.length + " Active Alerts \u2014 click to view"; }
-  else $("bnr").style.display = "none";
-  $("tally").innerHTML = "";
-  const tc = { Alert: 0, Confirmed: 0, Monitor: 0, Regulatory: 0 };
-  vis.forEach(c => { if (c.sg in tc) tc[c.sg]++; });
-  [["Alert", "#dc2626", "\u{1F534}"], ["Confirmed", "#16a34a", "\u{1F7E2}"], ["Monitor", "#ca8a04", "\u{1F7E1}"], ["Regulatory", "#2563eb", "\u{1F535}"]].forEach(([s, col, ic]) => {
-    if (tc[s]) { $("tally").appendChild(mk("span", { style: { color: col, fontWeight: "700", marginRight: "12px" }, txt: ic + " " + tc[s] + " " + s })); }
-  });
-  const grid = $("grid"); grid.innerHTML = "";
-  const grp = {}; vis.forEach(c => { (grp[c.dm] = grp[c.dm] || []).push(c); });
-  [...DM].filter(d => grp[d]).forEach(d => {
-    const col = mk("div", {});
-    col.appendChild(mk("div", { cls: "ch", txt: (DL[d] || d) + " " + grp[d].length, style: { borderBottomColor: DA[d] } }));
-    grp[d].forEach(c => {
-      const s = SG[c.sg] || SG.Monitor;
-      const card = mk("div", { cls: "cd" + (c.id === hlId ? " hl" : ""), id: "c_" + c.id, style: { borderLeftColor: s.b } });
-      card.onclick = () => { if (c.url) window.open(c.url, '_blank'); };
-      card.appendChild(mk("div", { cls: "ct" }, [mk("span", { cls: "bg", txt: s.i + " " + c.sg, style: { background: s.bg, color: s.c } }), mk("span", { txt: c.ag, style: { color: AC[c.ag], fontFamily: "monospace", fontSize: "10px" } })]));
-      card.appendChild(mk("div", { cls: "ci", txt: c.ti }));
-      card.appendChild(mk("div", { cls: "cs", txt: c.su }));
-      const tags = mk("div", { cls: "cth" });
-      c.tg.slice(0, 4).forEach(t => {
-        const h = mk("button", { cls: "ht", txt: t }); h.onclick = (e) => { e.stopPropagation(); $("srch").value = t; render(); }; tags.appendChild(h);
-      });
-      card.appendChild(tags);
-      var srcSpan = mk("span", { txt: c.sr }); if (c.xs) { var xb = mk("span", { cls: "x-src", txt: "X #privatecredit" }); srcSpan.appendChild(xb); } card.appendChild(mk("div", { cls: "cf" }, [srcSpan, mk("span", { txt: c.dt })]));
-      if (c.url) {
-        const link = mk("a", { cls: "cl", txt: "\u{1F517} Open Source \u2192", style: { } });
-        link.href = c.url; link.target = "_blank"; link.onclick = (e) => e.stopPropagation();
-        card.appendChild(link);
+// ===== MERGE WS CARDS =====
+function mergeWSCards(){
+  if(window.WS_CARDS && Array.isArray(window.WS_CARDS)){
+    const ids = new Set(allCards.map(c=>c.id));
+    window.WS_CARDS.forEach(w=>{
+      if(!ids.has(w.id)){
+        allCards.push(w);
+        ids.add(w.id);
       }
-      col.appendChild(card);
     });
-    grid.appendChild(col);
+  }
+}
+
+// ===== BACKEND INTEGRATION =====
+async function loadBackendCards(){
+  try{
+    const r = await fetch(CGI+"/api.py/cards");
+    if(r.ok){
+      const data = await r.json();
+      const ids = new Set(allCards.map(c=>c.id));
+      data.forEach(d=>{
+        if(!ids.has(d.id)){
+          allCards.push({id:d.id,ti:d.title,sr:d.source,ty:d.type,dt:d.date,dm:d.domain,sg:d.signal,ag:d.agent,tg:d.tags||[],su:d.summary,url:d.url||"",xs:!!d.xs});
+          ids.add(d.id);
+        }
+      });
+      renderAll();
+    }
+  }catch(e){/* backend unavailable */}
+}
+
+async function loadQueue(){
+  try{
+    const r = await fetch(CGI+"/api.py/queue");
+    if(r.ok){
+      queueItems = await r.json();
+      renderQueue();
+    }
+  }catch(e){/* backend unavailable */}
+}
+
+// ===== KPI RENDERING =====
+function renderKPI(){
+  const bar = document.getElementById("kpiBar");
+  bar.innerHTML = SK.map(s=>{
+    const cur = s.d[s.d.length-1];
+    const prev = s.d[s.d.length-2];
+    const delta = +(cur - prev).toFixed(1);
+    const isUp = delta > 0;
+    const isBad = s.bad_up ? isUp : !isUp;
+    const arrow = delta > 0 ? "▲" : delta < 0 ? "▼" : "—";
+    const cls = delta === 0 ? "" : (isBad ? "bad" : "good");
+    return `<div class="kpi-tile">
+      <div class="kpi-label">${s.lb}</div>
+      <div class="kpi-row">
+        <div class="kpi-val">${cur}</div>
+        <div class="kpi-unit">${s.un}</div>
+        <div class="kpi-delta ${cls}">${arrow} ${Math.abs(delta)}</div>
+      </div>
+      <div class="kpi-spark">${sparkSVG(s.d, isBad ? "#dc2626" : "#16a34a")}</div>
+    </div>`;
+  }).join("");
+}
+
+function sparkSVG(data, color){
+  const w=120,h=22,pad=2;
+  const min=Math.min(...data),max=Math.max(...data);
+  const range=max-min||1;
+  const pts=data.map((v,i)=>{
+    const x=pad+i*(w-2*pad)/(data.length-1);
+    const y=h-pad-(v-min)/(range)*(h-2*pad);
+    return `${x},${y}`;
+  });
+  return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><polyline points="${pts.join(" ")}" fill="none" stroke="${color}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="${pts[pts.length-1].split(",")[0]}" cy="${pts[pts.length-1].split(",")[1]}" r="2" fill="${color}"/></svg>`;
+}
+
+// ===== SIDEBAR RENDERING =====
+function renderSidebar(){
+  // Signals
+  const sigEl = document.getElementById("signalPills");
+  sigEl.innerHTML = ["Alert","Confirmed","Monitor","Regulatory"].map(s=>{
+    const cls = s.toLowerCase();
+    const cnt = allCards.filter(c=>c.sg===s).length;
+    return `<div class="pill pill-${cls}" data-signal="${s}" onclick="toggleFilter('signal','${s}')"><span class="dot"></span>${s}<span class="pill-count">${cnt}</span></div>`;
+  }).join("");
+
+  // Domains
+  const domEl = document.getElementById("domainPills");
+  domEl.innerHTML = `<div class="pill active" data-domain="All" onclick="toggleFilter('domain','All')">All</div>` +
+    Object.entries(DOMAINS).map(([k,v])=>{
+      const cnt = allCards.filter(c=>c.dm===k).length;
+      return `<div class="pill" data-domain="${k}" onclick="toggleFilter('domain','${k}')">${v}<span class="pill-count">${cnt}</span></div>`;
+    }).join("");
+
+  // Agents
+  const agEl = document.getElementById("agentPills");
+  agEl.innerHTML = Object.entries(AGENTS).map(([k,v])=>{
+    const cnt = allCards.filter(c=>c.ag===k).length;
+    return `<div class="pill" data-agent="${k}" onclick="toggleFilter('agent','${k}')">${k}<span class="pill-count">${cnt}</span></div>`;
+  }).join("");
+
+  // Scenarios
+  const scEl = document.getElementById("scenarioPills");
+  scEl.innerHTML = SCENARIOS.map(s=>{
+    return `<div class="pill" data-scenario="${s.n}" onclick="toggleFilter('scenario','${s.n}')">${s.n}</div>`;
+  }).join("");
+
+  // Hashtags — top trending
+  renderHashtags();
+
+  // Search
+  document.getElementById("search").addEventListener("input",e=>{
+    filters.search = e.target.value.toLowerCase();
+    renderAll();
   });
 }
 
-function genPdf() {
-  var date = "As of " + new Date().toLocaleString();
-  var synthEl = document.querySelector('#synth .sy-b');
-  var synthTxt = synthEl ? synthEl.textContent : "No synthesis available.";
-  var kpis = Array.from(document.querySelectorAll('#kpi .kt')).map(function(k) {
-    return {
-      l: k.querySelector('.kl').textContent,
-      v: k.querySelector('.kv').textContent + k.querySelector('.ku').textContent,
-      d: k.querySelector('.kd').textContent,
-      c: k.querySelector('.kd').style.color
-    };
+function renderHashtags(){
+  const tagCount = {};
+  allCards.forEach(c=>c.tg.forEach(t=>{tagCount[t]=(tagCount[t]||0)+1}));
+  const sorted = Object.entries(tagCount).sort((a,b)=>b[1]-a[1]).slice(0,12);
+  const el = document.getElementById("hashtagPills");
+  el.innerHTML = sorted.map(([t,c])=>`<div class="pill" data-hashtag="${t}" onclick="toggleFilter('hashtag','${t}')">${t}<span class="pill-count">${c}</span></div>`).join("");
+}
+
+// ===== FILTER LOGIC =====
+function toggleFilter(type, val){
+  if(type==="domain" && val==="All"){
+    filters.domain = null;
+  } else if(filters[type]===val){
+    filters[type]=null;
+  } else {
+    filters[type]=val;
+  }
+  updatePillStates();
+  renderAll();
+}
+
+function updatePillStates(){
+  document.querySelectorAll(".pill[data-signal]").forEach(p=>{
+    p.classList.toggle("active", filters.signal===p.dataset.signal);
   });
-  var alerts = C.filter(function(c) { return c.sg === "Alert"; });
-  var kpiHtml = '';
-  kpis.forEach(function(k) {
-    kpiHtml += '<div style="background: #18181b; border: 1px solid #27272a; padding: 10px; border-radius: 6px;">';
-    kpiHtml += '<div style="font-size: 10px; color: #71717a;">' + k.l + '</div>';
-    kpiHtml += '<div style="display: flex; justify-content: space-between;">';
-    kpiHtml += '<span style="font-size: 18px; font-weight: bold;">' + k.v + '</span>';
-    kpiHtml += '<span style="color: ' + k.c + ';">' + k.d + '</span>';
-    kpiHtml += '</div></div>';
+  document.querySelectorAll(".pill[data-domain]").forEach(p=>{
+    if(p.dataset.domain==="All") p.classList.toggle("active", !filters.domain);
+    else p.classList.toggle("active", filters.domain===p.dataset.domain);
   });
-  var alertHtml = '';
-  alerts.forEach(function(a) {
-    alertHtml += '<div style="background: #18181b; border: 1px solid #27272a; border-left: 4px solid #dc2626; padding: 10px; margin-bottom: 10px; border-radius: 4px;">';
-    alertHtml += '<div style="font-weight: bold; color: #f4f4f5;">' + a.ti + '</div>';
-    alertHtml += '<div style="font-size: 12px; color: #d4d4d8; margin: 5px 0;">' + a.su + '</div>';
-    alertHtml += '<div style="font-size: 10px; color: #71717a;">Source: ' + a.sr + ' | ' + a.dt + '</div>';
-    alertHtml += '</div>';
+  document.querySelectorAll(".pill[data-agent]").forEach(p=>{
+    p.classList.toggle("active", filters.agent===p.dataset.agent);
   });
-  var content = '<div style="font-family: Arial, sans-serif; padding: 20px; color: #f4f4f5; background: #09090b;">';
-  content += '<div style="display: flex; justify-content: space-between; border-bottom: 2px solid #3b82f6; padding-bottom: 10px; margin-bottom: 20px;">';
-  content += '<h1 style="margin: 0; color: #3b82f6;">PCIM</h1>';
-  content += '<div style="text-align: right;"><div style="font-weight: bold;">EXECUTIVE INTELLIGENCE REPORT</div>';
-  content += '<div style="font-size: 12px; color: #71717a;">' + date + '</div></div></div>';
-  content += '<div style="background: #111114; border: 1px solid #27272a; padding: 15px; border-radius: 8px; margin-bottom: 20px;">';
-  content += '<h3 style="color: #fbbf24; margin-top: 0;">AI SYNTHESIS</h3>';
-  content += '<p style="font-size: 14px;">' + synthTxt + '</p></div>';
-  content += '<h3 style="color: #71717a; border-bottom: 1px solid #27272a; padding-bottom: 5px;">MARKET KPIS</h3>';
-  content += '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;">' + kpiHtml + '</div>';
-  content += '<h3 style="color: #dc2626; border-bottom: 1px solid #27272a; padding-bottom: 5px;">CRITICAL ALERTS</h3>';
-  content += alertHtml;
-  content += '<div style="margin-top: 30px; text-align: center; font-size: 10px; color: #52525b;">Proprietary &amp; Confidential</div></div>';
-  var opt = {
-    margin: [10, 10],
-    filename: 'PCIM_Report.pdf',
-    image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: { scale: 2, useCORS: true, backgroundColor: '#09090b' },
-    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+  document.querySelectorAll(".pill[data-scenario]").forEach(p=>{
+    p.classList.toggle("active", filters.scenario===p.dataset.scenario);
+  });
+  document.querySelectorAll(".pill[data-hashtag]").forEach(p=>{
+    p.classList.toggle("active", filters.hashtag===p.dataset.hashtag);
+  });
+}
+
+function resetFilters(){
+  filters = {signal:null,domain:null,agent:null,scenario:null,hashtag:null,search:""};
+  document.getElementById("search").value = "";
+  updatePillStates();
+  renderAll();
+}
+
+function getFiltered(){
+  let cards = [...allCards];
+  // blocked domains
+  cards = cards.filter(c=>!BLOCKED.some(b=>c.url&&c.url.includes(b)));
+  if(filters.signal) cards = cards.filter(c=>c.sg===filters.signal);
+  if(filters.domain) cards = cards.filter(c=>c.dm===filters.domain);
+  if(filters.agent) cards = cards.filter(c=>c.ag===filters.agent);
+  if(filters.scenario){
+    const sc = SCENARIOS.find(s=>s.n===filters.scenario);
+    if(sc) cards = cards.filter(c=>c.tg.some(t=>sc.tg.includes(t)));
+  }
+  if(filters.hashtag) cards = cards.filter(c=>c.tg.includes(filters.hashtag));
+  if(filters.search){
+    const q = filters.search;
+    cards = cards.filter(c=>(c.ti+c.su+c.sr+c.tg.join(" ")).toLowerCase().includes(q));
+  }
+  // sort by date desc
+  cards.sort((a,b)=>b.dt.localeCompare(a.dt));
+  return cards;
+}
+
+// ===== MAIN RENDER =====
+function renderAll(){
+  const filtered = getFiltered();
+  const main = document.getElementById("mainContent");
+
+  // Alert banner
+  const alerts = allCards.filter(c=>c.sg==="Alert");
+  const banner = document.getElementById("alertBanner");
+  if(alerts.length > 0){
+    banner.classList.add("show");
+    document.getElementById("alertBannerText").innerHTML = `\u{1F534} ${alerts.length} Active Alert${alerts.length>1?"s":""} — click to view`;
+  } else {
+    banner.classList.remove("show");
+  }
+
+  // Synthesis
+  const synthText = getSynthesis(alerts.length);
+
+  // Tally
+  const tally = {Alert:0,Confirmed:0,Monitor:0,Regulatory:0};
+  filtered.forEach(c=>{ if(tally[c.sg]!==undefined) tally[c.sg]++; });
+
+  // Group by domain
+  const groups = {};
+  filtered.forEach(c=>{
+    if(!groups[c.dm]) groups[c.dm]=[];
+    groups[c.dm].push(c);
+  });
+
+  let html = `
+    <div class="synth-box">
+      <div class="synth-icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 0 1-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 0 1 4.5 0m0 0v5.714a2.25 2.25 0 0 0 .659 1.591L19 14.5m-4.25-11.396c.251.023.501.05.75.082M12 3v5.714"/></svg></div>
+      <div>
+        <div class="synth-label">AI Synthesis Engine</div>
+        <div class="synth-text">${synthText}</div>
+      </div>
+    </div>
+    <div class="tally-row">
+      <div class="tally-item"><span class="tally-dot" style="background:#dc2626"></span>${tally.Alert} Alert</div>
+      <div class="tally-item"><span class="tally-dot" style="background:#16a34a"></span>${tally.Confirmed} Confirmed</div>
+      <div class="tally-item"><span class="tally-dot" style="background:#ca8a04"></span>${tally.Monitor} Monitor</div>
+      <div class="tally-item"><span class="tally-dot" style="background:#2563eb"></span>${tally.Regulatory} Regulatory</div>
+      <div class="tally-item" style="margin-left:auto;color:#52525b">${filtered.length} of ${allCards.length} cards</div>
+    </div>
+  `;
+
+  if(filtered.length === 0){
+    html += `<div class="no-results"><div class="no-results-icon">⊘</div><div class="no-results-text">No cards match current filters</div></div>`;
+  } else {
+    const domOrder = ["CreditMarkets","Macro","Regulatory","Actuarial"];
+    domOrder.forEach(dm=>{
+      if(!groups[dm]) return;
+      html += `<div class="domain-group"><div class="domain-header">${DOMAINS[dm]} (${groups[dm].length})</div><div class="card-grid">`;
+      groups[dm].forEach(c=>{
+        html += renderCard(c);
+      });
+      html += `</div></div>`;
+    });
+  }
+
+  main.innerHTML = html;
+}
+
+function renderCard(c){
+  const sigCls = c.sg.toLowerCase();
+  const badgeCls = `badge-${sigCls}`;
+  const tagsHtml = c.tg.map(t=>`<span class="htag" onclick="event.stopPropagation();toggleFilter('hashtag','${t}')">${t}</span>`).join("");
+  const xBadge = c.xs ? `<span class="x-badge">X #privatecredit</span>` : "";
+  const linkHtml = c.url ? `<a class="card-link" href="${c.url}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">Open Source →</a>` : `<span style="color:#3f3f46">No link</span>`;
+  return `<div class="card" data-signal="${c.sg}" data-id="${c.id}" onclick="${c.url ? `window.open('${c.url}','_blank')` : ''}">
+    <div class="card-top">
+      <span class="badge ${badgeCls}">${c.sg}</span>
+      <span class="agent-tag">${c.ag}</span>
+      ${xBadge}
+    </div>
+    <div class="card-title">${c.ti}</div>
+    <div class="card-summary">${c.su}</div>
+    <div class="card-tags">${tagsHtml}</div>
+    <div class="card-footer">
+      <span>${c.sr} · ${c.dt}</span>
+      ${linkHtml}
+    </div>
+  </div>`;
+}
+
+function getSynthesis(alertCount){
+  if(alertCount >= 5) return `<strong>ELEVATED RISK POSTURE.</strong> ${alertCount} active alerts across the private credit monitoring perimeter. Distressed cycle indicators are converging — LME activity, PIK stress, and covenant breach signals are clustering simultaneously. BIS doom-loop risk assessment and Fitch rating differentiation for alt IM-affiliated insurers amplify supervisory concern. Recommend immediate review of general account exposure concentration and stress-test assumptions. Regulatory pipeline accelerating with NAIC RBC factor overhaul targeting year-end 2026 adoption.`;
+  if(alertCount >= 3) return `<strong>HEIGHTENED MONITORING.</strong> ${alertCount} active alerts detected. Distressed debt indicators show convergence across multiple sources — covenant pressure, recovery rate deterioration, and LME activity are trending adversely. Regulatory attention intensifying with IAIS and NAIC both advancing private credit oversight frameworks. General account allocation review recommended.`;
+  if(alertCount >= 1) return `<strong>ACTIVE MONITORING.</strong> ${alertCount} alert-level signal${alertCount>1?"s":""} in the intelligence feed. Conditions warrant continued surveillance of direct lending recovery rates and middle market covenant health. No immediate action required but escalation triggers should be reviewed.`;
+  return `<strong>BASELINE.</strong> No active alerts. Market conditions and regulatory environment within expected parameters. Continuing routine surveillance across all domains.`;
+}
+
+function scrollToFirstAlert(){
+  const el = document.querySelector('.card[data-signal="Alert"]');
+  if(el) el.scrollIntoView({behavior:"smooth",block:"center"});
+}
+
+// ===== REGULATORY FEED =====
+function renderRegFeed(){
+  const el = document.getElementById("regFeed");
+  el.innerHTML = R.map(r=>`<div class="reg-item">
+    <span class="reg-urg ${r.ug}">${r.ug}</span>
+    <div>
+      <div class="reg-text">${r.ti}</div>
+      <div class="reg-meta">${r.ju} · ${r.dt}</div>
+    </div>
+  </div>`).join("");
+}
+
+// ===== CONTENT QUEUE =====
+function renderQueue(){
+  const el = document.getElementById("queueList");
+  if(!queueItems.length){
+    el.innerHTML = `<div style="font-size:10px;color:#52525b">No pending items</div>`;
+    return;
+  }
+  el.innerHTML = queueItems.map(q=>{
+    const sigCls = (q.signal||"Monitor").toLowerCase();
+    return `<div class="q-item">
+      <div class="card-top"><span class="badge badge-${sigCls}">${q.signal||"Monitor"}</span></div>
+      <div class="q-item-title">${q.title}</div>
+      <div class="q-item-src">${q.source} · ${q.date||""}</div>
+      <div class="q-item-actions">
+        <button class="q-btn approve" onclick="approveQueue('${q.id}')">Approve</button>
+        <button class="q-btn dismiss" onclick="dismissQueue('${q.id}')">Dismiss</button>
+      </div>
+    </div>`;
+  }).join("");
+}
+
+async function approveQueue(id){
+  try{
+    const r = await fetch(CGI+"/api.py/approve?id="+id,{method:"POST"});
+    if(r.ok){
+      const card = await r.json();
+      allCards.push({id:card.id,ti:card.title,sr:card.source,ty:card.type,dt:card.date,dm:card.domain,sg:card.signal,ag:card.agent,tg:card.tags||[],su:card.summary,url:card.url||"",xs:!!card.xs});
+      queueItems = queueItems.filter(q=>q.id!==id);
+      renderQueue();
+      renderSidebar();
+      renderAll();
+    }
+  }catch(e){
+    // remove from local queue on error too
+    queueItems = queueItems.filter(q=>q.id!==id);
+    renderQueue();
+  }
+}
+
+async function dismissQueue(id){
+  try{
+    await fetch(CGI+"/api.py/queue?id="+id,{method:"DELETE"});
+  }catch(e){}
+  queueItems = queueItems.filter(q=>q.id!==id);
+  renderQueue();
+}
+
+// ===== UPLOAD MODAL =====
+function openUpload(){
+  document.getElementById("uploadModal").classList.add("open");
+  document.getElementById("evalPanel").classList.remove("show");
+  document.getElementById("btnAddMonitor").disabled = true;
+}
+function closeUpload(){
+  document.getElementById("uploadModal").classList.remove("open");
+  // Reset form
+  ["uTitle","uSource","uUrl","uSummary","uTags"].forEach(id=>document.getElementById(id).value="");
+  document.getElementById("uFile").value = "";
+  document.getElementById("evalPanel").classList.remove("show");
+}
+
+function runEval(){
+  const title = document.getElementById("uTitle").value;
+  const source = document.getElementById("uSource").value;
+  const summary = document.getElementById("uSummary").value;
+  const url = document.getElementById("uUrl").value;
+  const domain = document.getElementById("uDomain").value;
+  const combined = (title+" "+source+" "+summary+" "+url).toLowerCase();
+
+  // Credibility
+  let cred = "Low", credCls = "low";
+  if(HIGH_CRED.some(h=>combined.includes(h))){ cred="High"; credCls="high"; }
+  else if(MED_CRED.some(m=>combined.includes(m))){ cred="Medium"; credCls="med"; }
+
+  // Relevance
+  let relScore = 0;
+  REL_KEYS.forEach(k=>{ if(combined.includes(k)) relScore += 7; });
+  relScore = Math.min(100, Math.max(10, relScore));
+
+  // Suggest signal
+  let sugSignal = "Monitor";
+  if(combined.match(/alert|urgent|critical|doom|default|distress|downgrade|fire sale/)) sugSignal = "Alert";
+  else if(combined.match(/confirm|data|spread|oas|tighten|actual/)) sugSignal = "Confirmed";
+  else if(combined.match(/naic|iais|regul|rbc|supervis|solvency/)) sugSignal = "Regulatory";
+
+  // Suggest domain
+  let sugDomain = domain;
+  if(combined.match(/naic|iais|regul|supervis|solvency|rbc/)) sugDomain = "Regulatory";
+  else if(combined.match(/macro|fed |rates|gdp|inflation|tighten/)) sugDomain = "Macro";
+  else if(combined.match(/actuari|alm|reserv|cash flow/)) sugDomain = "Actuarial";
+  else sugDomain = "CreditMarkets";
+
+  // Auto summary
+  let autoSummary = summary || `${source} analysis of private credit implications for life insurer general accounts.`;
+  if(autoSummary.length > 200) autoSummary = autoSummary.substring(0, 197) + "...";
+
+  // Auto tags
+  const autoTags = [];
+  if(combined.includes("private credit")) autoTags.push("#privatecredit");
+  if(combined.includes("clo")) autoTags.push("#clo");
+  if(combined.includes("direct lending")) autoTags.push("#directlending");
+  if(combined.includes("rbc")) autoTags.push("#rbcoptimization");
+  if(combined.includes("default")) autoTags.push("#defaultcycle");
+  if(combined.includes("lme")) autoTags.push("#lme");
+  if(combined.includes("life insur")||combined.includes("annuit")) autoTags.push("#lifeannuity");
+  if(combined.includes("general account")) autoTags.push("#generalaccount");
+  if(combined.includes("naic")) autoTags.push("#naicupdate");
+  if(autoTags.length===0) autoTags.push("#privatecredit");
+
+  // Update eval panel
+  document.getElementById("evalRelevance").textContent = relScore + "/100";
+  document.getElementById("evalRelevance").className = "eval-val " + (relScore>=70?"high":relScore>=40?"med":"low");
+  document.getElementById("evalCredibility").textContent = cred;
+  document.getElementById("evalCredibility").className = "eval-val " + credCls;
+  document.getElementById("evalSignal").textContent = sugSignal;
+  document.getElementById("evalSignal").className = "eval-val";
+  document.getElementById("evalDomain").textContent = DOMAINS[sugDomain] || sugDomain;
+  document.getElementById("evalDomain").className = "eval-val";
+  document.getElementById("evalSummary").textContent = autoSummary;
+  document.getElementById("evalTags").innerHTML = autoTags.map(t=>`<span class="htag">${t}</span>`).join("");
+
+  // Store suggestions for add
+  document.getElementById("evalPanel")._data = {signal:sugSignal, domain:sugDomain, tags:autoTags, summary:autoSummary};
+  document.getElementById("evalPanel").classList.add("show");
+  document.getElementById("btnAddMonitor").disabled = false;
+}
+
+async function addToMonitor(){
+  const title = document.getElementById("uTitle").value || "Untitled";
+  const source = document.getElementById("uSource").value || "User Submission";
+  const url = document.getElementById("uUrl").value || "";
+  const summary = document.getElementById("uSummary").value || "";
+  const domain = document.getElementById("uDomain").value;
+  const signal = document.getElementById("uSignal").value;
+  const tagsRaw = document.getElementById("uTags").value;
+  const tags = tagsRaw ? tagsRaw.split(",").map(t=>t.trim()).filter(Boolean) : [];
+
+  const evalData = document.getElementById("evalPanel")._data || {};
+  const finalTags = tags.length ? tags : (evalData.tags || ["#privatecredit"]);
+  const finalSummary = summary || evalData.summary || "";
+  const finalSignal = signal || evalData.signal || "Monitor";
+  const finalDomain = domain || evalData.domain || "CreditMarkets";
+
+  const card = {
+    id: "u" + Date.now().toString(36),
+    title: title,
+    source: source,
+    type: "article",
+    date: new Date().toISOString().split("T")[0],
+    domain: finalDomain,
+    signal: finalSignal,
+    agent: "A1",
+    tags: finalTags,
+    summary: finalSummary,
+    url: url,
+    xs: false
   };
-  html2pdf().set(opt).from(content).save();
+
+  // Add to local cards
+  allCards.push({id:card.id,ti:card.title,sr:card.source,ty:card.type,dt:card.date,dm:card.domain,sg:card.signal,ag:card.agent,tg:card.tags,su:card.summary,url:card.url,xs:false});
+
+  // Persist to backend
+  try{
+    await fetch(CGI+"/api.py/cards",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(card)});
+  }catch(e){}
+
+  closeUpload();
+  renderSidebar();
+  renderAll();
 }
 
-try { buildKPI(); buildReg(); render(); } catch(e) { document.getElementById("grid").innerHTML = '<div style="color:#dc2626;padding:20px;">JS Error: ' + e.message + '</div>'; } function openUpload() { var d = document.getElementById('upm'); if (!d) { var ov = document.createElement('div'); ov.id = 'upm'; ov.className = 'upm-overlay'; ov.innerHTML = '<div class="upbox"><h2>Submit Content for Evaluation</h2><div class="upsub">Paste a URL or describe research for credibility evaluation, rating, and inclusion.</div><div class="upfld"><label>Title</label><input id="up-ti" placeholder="e.g. Goldman Sachs: Private Credit Stress Report"></div><div class="upfld"><label>Source / Firm</label><input id="up-sr" placeholder="e.g. Goldman Sachs Research"></div><div class="upfld"><label>URL</label><input id="up-url" placeholder="https://..."></div><div class="upfld"><label>Summary / Key Findings</label><textarea id="up-su" placeholder="Describe the key findings or thesis..."></textarea></div><div style="display:flex;gap:8px"><div class="upfld" style="flex:1"><label>Domain</label><select id="up-dm"><option value="CreditMarkets">Credit Markets</option><option value="Macro">Macro &amp; Rates</option><option value="Regulatory">Regulatory</option><option value="Actuarial">Actuarial/ALM</option></select></div><div class="upfld" style="flex:1"><label>Signal</label><select id="up-sg"><option value="Monitor">Monitor</option><option value="Alert">Alert</option><option value="Confirmed">Confirmed</option><option value="Regulatory">Regulatory</option></select></div></div><div class="upfld"><label>Tags (comma separated)</label><input id="up-tg" placeholder="#privatecredit, #directlending"></div><div class="upfld"><label>Upload File (PDF/text)</label><div id="up-drop" onclick="document.getElementById(\'up-file\').click()">Drop file here or click to browse<br><span id="up-file-name" style="color:#60a5fa"></span><input type="file" id="up-file" accept=".pdf,.txt,.doc,.docx" onchange="if(this.files[0])document.getElementById(\'up-file-name\').textContent=this.files[0].name"></div></div><div id="eval-out" class="eval-box"></div><div class="up-acts"><button class="up-evalb" onclick="evalContent()">Evaluate &amp; Rate</button><button id="up-add-btn" class="up-addb" onclick="addCard()">Add to Monitor</button><button class="up-canb" onclick="closeUpload()">Cancel</button></div></div>'; document.body.appendChild(ov); } document.getElementById('upm').classList.add('show'); } function closeUpload() { var d = document.getElementById('upm'); if (d) d.classList.remove('show'); } function evalContent() { var ti = document.getElementById('up-ti').value.trim(); var sr = document.getElementById('up-sr').value.trim(); var url = document.getElementById('up-url').value.trim(); var su = document.getElementById('up-su').value.trim(); if (!ti || !su) { alert('Title and Summary are required.'); return; } var score = 0, factors = []; if (ti.length > 10) { score += 15; factors.push('Title quality'); } if (su.length > 30) { score += 20; factors.push('Summary depth'); } if (url && url.startsWith('http')) { score += 20; factors.push('Source URL'); } if (sr) { score += 15; factors.push('Source attribution'); } var ws = ['morgan stanley','goldman sachs','jpmorgan','ubs','blackrock','pimco','apollo','kkr','ares','blue owl','carlyle','brookfield','oaktree','hps','barclays','citi','bofa','wells fargo','deutsche bank'].some(function(f) { return sr.toLowerCase().includes(f) || ti.toLowerCase().includes(f); }); if (ws) { score += 15; factors.push('Wall Street firm'); } var kt = ['private credit','direct lending','bdc','clo','covenant','default','spread','leverage','distress','redemption','liquidity','pik','insurance','actuarial'].filter(function(t) { return (ti + ' ' + su).toLowerCase().includes(t); }); score += Math.min(kt.length * 3, 15); if (kt.length) factors.push(kt.length + ' key terms'); score = Math.min(score, 100); var r = score >= 80 ? 'A' : score >= 60 ? 'B+' : score >= 40 ? 'B' : 'C'; var cl = score >= 80 ? '#16a34a' : score >= 60 ? '#3b82f6' : score >= 40 ? '#ca8a04' : '#71717a'; var eo = document.getElementById('eval-out'); eo.className = 'eval-box show'; eo.innerHTML = '<div style="font-size:10px;font-weight:700;color:#71717a;margin-bottom:8px;letter-spacing:1px">EVALUATION RESULTS</div><div class="eval-row"><span class="eval-lbl">Credibility Score</span><span class="eval-val" style="font-size:18px;color:' + cl + '">' + score + '/100</span></div><div class="eval-row"><span class="eval-lbl">Rating</span><span class="eval-val" style="color:' + cl + '">' + r + '</span></div><div class="eval-row"><span class="eval-lbl">Domain</span><span class="eval-val">' + (DL[document.getElementById('up-dm').value] || document.getElementById('up-dm').value) + '</span></div><div class="eval-row"><span class="eval-lbl">Signal</span><span class="eval-val">' + document.getElementById('up-sg').value + '</span></div><div style="font-size:9px;color:#52525b;margin-top:4px">Factors: ' + factors.join(', ') + '</div>'; if (score >= 40) document.getElementById('up-add-btn').style.display = 'block'; } function addCard() { var url = document.getElementById('up-url').value.trim(); if (isBlockedUrl(url)) { alert('This source domain is blocked (paywalled). Card not added.'); return; } var dm = document.getElementById('up-dm').value; var agMap = { CreditMarkets: 'A1', Macro: 'A3', Regulatory: 'A4', Actuarial: 'A1' }; var tg = document.getElementById('up-tg').value.split(',').map(function(t) { t = t.trim(); return t.startsWith('#') ? t : '#' + t; }).filter(function(t) { return t.length > 1; }); C.push({ id: 'usr' + Date.now(), ti: document.getElementById('up-ti').value.trim(), sr: document.getElementById('up-sr').value.trim() || 'User Submission', ty: 'article', dt: new Date().toISOString().slice(0,10), dm: dm, sg: document.getElementById('up-sg').value, ag: agMap[dm] || 'A1', tg: tg.length ? tg : ['#privatecredit', '#usersubmission'], su: document.getElementById('up-su').value.trim(), url: document.getElementById('up-url').value.trim(), usr: true }); closeUpload(); render(); }
+// ===== PDF REPORT =====
+function genPdf(){
+  const overlay = document.getElementById("pdfOverlay");
+  overlay.classList.add("show");
+
+  const now = new Date();
+  const dateStr = now.toLocaleString("en-US",{year:"numeric",month:"long",day:"numeric",hour:"2-digit",minute:"2-digit",timeZoneName:"short"});
+
+  const alerts = allCards.filter(c=>c.sg==="Alert");
+  const regs = allCards.filter(c=>c.sg==="Regulatory"||c.dm==="Regulatory");
+  const synthText = getSynthesis(alerts.length);
+
+  // Domain breakdown
+  const domCounts = {};
+  allCards.forEach(c=>{domCounts[c.dm]=(domCounts[c.dm]||0)+1});
+
+  let pdfHtml = `
+  <div style="font-family:ui-sans-serif,system-ui,-apple-system,sans-serif;color:#18181b;max-width:800px;margin:0 auto;padding:24px;background:#fff">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid #18181b;padding-bottom:12px;margin-bottom:8px">
+      <div>
+        <div style="font-size:18px;font-weight:800;letter-spacing:1px">PCIM | EXECUTIVE INTELLIGENCE REPORT</div>
+        <div style="font-size:8px;color:#a1a1aa;margin-top:2px">ReviveERM&trade; &mdash; Spiritus Partners, Inc.</div>
+        <div style="font-size:10px;color:#71717a;margin-top:4px">As of ${dateStr}</div>
+      </div>
+      <div style="text-align:right;font-size:9px;color:#71717a">PROPRIETARY &amp; CONFIDENTIAL<br>For Internal Use Only</div>
+    </div>
+    <div style="font-size:10px;color:#52525b;margin-bottom:20px;padding:6px 0;border-bottom:1px solid #e4e4e7">Prepared for: <strong>CFO / CRO / CAO</strong> — General Account Private Credit Exposure</div>
+
+    <div style="margin-bottom:20px">
+      <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;color:#18181b">Executive Summary</div>
+      <div style="font-size:11px;line-height:1.7;color:#3f3f46;padding:12px;background:#f4f4f5;border-radius:4px;border-left:3px solid #2563eb">${synthText}</div>
+    </div>
+
+    <div style="margin-bottom:20px">
+      <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;color:#18181b">Key Risk Indicators</div>
+      <table style="width:100%;border-collapse:collapse;font-size:10px">
+        <thead><tr style="background:#f4f4f5">
+          <th style="text-align:left;padding:6px 8px;font-weight:600">Indicator</th>
+          <th style="text-align:right;padding:6px 8px;font-weight:600">Current</th>
+          <th style="text-align:right;padding:6px 8px;font-weight:600">Change</th>
+          <th style="text-align:left;padding:6px 8px;font-weight:600">Trend</th>
+        </tr></thead>
+        <tbody>${SK.map(s=>{
+          const cur=s.d[s.d.length-1],prev=s.d[s.d.length-2],delta=+(cur-prev).toFixed(1);
+          const isUp=delta>0,isBad=s.bad_up?isUp:!isUp;
+          return `<tr style="border-bottom:1px solid #e4e4e7">
+            <td style="padding:6px 8px">${s.lb}</td>
+            <td style="padding:6px 8px;text-align:right;font-weight:700">${cur} ${s.un}</td>
+            <td style="padding:6px 8px;text-align:right;color:${isBad?"#dc2626":"#16a34a"};font-weight:600">${delta>0?"+":""}${delta}</td>
+            <td style="padding:6px 8px">${isBad?"⚠ Adverse":"✓ Favorable"}</td>
+          </tr>`;
+        }).join("")}</tbody>
+      </table>
+    </div>
+
+    <div style="margin-bottom:20px">
+      <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;color:#dc2626">Active Alerts (${alerts.length})</div>
+      ${alerts.map(c=>`<div style="padding:10px;margin-bottom:6px;background:#fef2f2;border-left:3px solid #dc2626;border-radius:4px">
+        <div style="font-size:11px;font-weight:700;color:#18181b;margin-bottom:4px">${c.ti}</div>
+        <div style="font-size:10px;color:#52525b;line-height:1.5;margin-bottom:4px">${c.su}</div>
+        <div style="font-size:9px;color:#71717a">${c.sr} · ${c.dt}${c.url?` · <a href="${c.url}" style="color:#2563eb">${c.url}</a>`:""}</div>
+      </div>`).join("")}
+    </div>
+
+    <div style="margin-bottom:20px">
+      <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;color:#2563eb">Regulatory Pipeline</div>
+      <table style="width:100%;border-collapse:collapse;font-size:10px">
+        <thead><tr style="background:#f4f4f5">
+          <th style="text-align:left;padding:6px 8px;font-weight:600">Item</th>
+          <th style="text-align:left;padding:6px 8px;font-weight:600">Urgency</th>
+          <th style="text-align:left;padding:6px 8px;font-weight:600">Jurisdiction</th>
+          <th style="text-align:left;padding:6px 8px;font-weight:600">Date</th>
+        </tr></thead>
+        <tbody>${R.map(r=>`<tr style="border-bottom:1px solid #e4e4e7">
+          <td style="padding:6px 8px">${r.ti}</td>
+          <td style="padding:6px 8px;font-weight:700;color:${r.ug==="URGENT"?"#dc2626":r.ug==="MONITOR"?"#ca8a04":"#71717a"}">${r.ug}</td>
+          <td style="padding:6px 8px">${r.ju}</td>
+          <td style="padding:6px 8px">${r.dt}</td>
+        </tr>`).join("")}</tbody>
+      </table>
+    </div>
+
+    <div style="margin-bottom:20px">
+      <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;color:#18181b">Domain Breakdown</div>
+      <table style="width:100%;border-collapse:collapse;font-size:10px">
+        <thead><tr style="background:#f4f4f5">
+          <th style="text-align:left;padding:6px 8px;font-weight:600">Domain</th>
+          <th style="text-align:right;padding:6px 8px;font-weight:600">Cards</th>
+          <th style="text-align:left;padding:6px 8px;font-weight:600">Notable</th>
+        </tr></thead>
+        <tbody>${Object.entries(DOMAINS).map(([k,v])=>{
+          const cards = allCards.filter(c=>c.dm===k);
+          const notable = cards.filter(c=>c.sg==="Alert").length;
+          return `<tr style="border-bottom:1px solid #e4e4e7">
+            <td style="padding:6px 8px;font-weight:600">${v}</td>
+            <td style="padding:6px 8px;text-align:right">${cards.length}</td>
+            <td style="padding:6px 8px;color:${notable?"#dc2626":"#71717a"}">${notable?notable+" alert(s)":"No alerts"}</td>
+          </tr>`;
+        }).join("")}</tbody>
+      </table>
+    </div>
+
+    <div style="margin-top:30px;padding-top:12px;border-top:2px solid #18181b;font-size:8px;color:#a1a1aa;text-align:center">
+      Proprietary &amp; Confidential — For Internal Use Only<br>
+      Generated by PCIM &middot; Private Credit Intelligence Monitor &middot; ${dateStr}<br>
+      &copy; 2026 ReviveERM&trade; &mdash; a subsidiary of Spiritus Partners, Inc., a Delaware corporation. All rights reserved.
+    </div>
+  </div>`;
+
+  const container = document.createElement("div");
+  container.innerHTML = pdfHtml;
+  document.body.appendChild(container);
+
+  const opt = {
+    margin: [10, 10, 10, 10],
+    filename: `PCIM_Executive_Report_${now.toISOString().split("T")[0]}.pdf`,
+    image: {type:"jpeg",quality:0.98},
+    html2canvas: {scale:2,useCORS:true},
+    jsPDF: {unit:"mm",format:"a4",orientation:"portrait"}
+  };
+
+  html2pdf().set(opt).from(container).save().then(()=>{
+    document.body.removeChild(container);
+    overlay.classList.remove("show");
+  }).catch(()=>{
+    document.body.removeChild(container);
+    overlay.classList.remove("show");
+  });
+}
+
+// ===== INITIALIZE =====
+document.addEventListener("DOMContentLoaded", function(){
+  mergeWSCards();
+  setHeaderDate();
+  renderKPI();
+  renderSidebar();
+  renderRegFeed();
+  loadBackendCards();
+  loadQueue();
+  renderAll();
+});
 </script>
 <script src="ws-cards.js"></script>
 </body>
